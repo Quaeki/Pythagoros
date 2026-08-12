@@ -1,6 +1,8 @@
 package com.example.pythagoros.data.prefs
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 /**
  * Небольшие локальные настройки: пройден ли первый запуск, выбран ли язык, есть ли подписка.
@@ -8,7 +10,7 @@ import android.content.Context
  * Статус Pro здесь — кэш ответа биллинга: источником истины остаётся Google Play,
  * но экранам нужно знать состояние сразу, до ответа сети.
  */
-class AppPreferences(context: Context) {
+class AppPreferences @Inject constructor(@ApplicationContext context: Context) {
 
     private val prefs = context.applicationContext
         .getSharedPreferences("pythagoros", Context.MODE_PRIVATE)

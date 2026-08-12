@@ -4,14 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import com.example.pythagoros.presentation.PythagorosApp
+import com.example.pythagoros.presentation.viewmodel.PythagorosViewModel
 import com.example.pythagoros.ui.theme.PythagorosTheme
 import com.example.pythagoros.ui.theme.SurfaceWhite
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val viewModel: PythagorosViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Статус-бар в макете нарисован; в приложении он системный и прозрачный.
@@ -20,7 +26,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             PythagorosTheme {
                 PythagorosApp(
-                    Modifier
+                    viewModel = viewModel,
+                    modifier = Modifier
                         .fillMaxSize()
                         .background(SurfaceWhite)
                 )

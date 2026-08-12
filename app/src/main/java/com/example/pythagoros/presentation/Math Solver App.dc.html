@@ -25,7 +25,7 @@ a{color:#6C5CE7}a:hover{color:#4B3ED6}
     <div style="font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6C5CE7">Тур 6</div>
     <h1 style="margin:0;font-size:30px;font-weight:700">Pro-гейт при вводе и новый сканер</h1>
   </div>
-  <p style="margin:0;max-width:720px;font-size:15px;line-height:1.6;color:#5A5B66;text-wrap:pretty">Приложение определяет тип задачи ещё до решения: <a href="#6a">6a</a> — при ручном вводе физики появляется шторка с Pro, <a href="#6b">6b</a> — то же в сканере: рамка распознала чертёж и предлагает Pro. <a href="#6c">6c</a> — переработанный сканер: режимы съёмки, автоопределение типа задачи, живые подсказки.</p>
+  <p style="margin:0;max-width:720px;font-size:15px;line-height:1.6;color:#5A5B66;text-wrap:pretty">Приложение определяет тип задачи ещё до решения: <a href="#6a">6a</a> — при ручном вводе физики появляется шторка с Pro, <a href="#6b">6b</a> — то же в сканере: рамка распознала чертёж и предлагает Pro. <a href="#6c">6c</a> — переработанный сканер: чистый видоискатель, угловые маркеры, одна подпись, затвор с галереей и ручным вводом.</p>
 
   <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
 
@@ -86,11 +86,11 @@ a{color:#6C5CE7}a:hover{color:#4B3ED6}
         <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">6b</span>
         <span style="font-size:14px;font-weight:600">Сканер распознал геометрию → Pro</span>
       </div>
-      <div style="width:390px;height:800px;background:#0F1016;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;position:relative">
-        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700;color:#FFF"><span>9:41</span><span>▮▮▮ 84%</span></div>
-        <div style="flex:1;margin:12px;border-radius:28px;background:repeating-linear-gradient(115deg,#2A2B36 0 22px,#262731 22px 44px);position:relative">
-          <div style="position:absolute;inset:70px 22px 200px;border:3px solid #6C5CE7;border-radius:18px;background:rgba(108,92,231,.12)"></div>
-          <div style="position:absolute;top:78px;left:30px;background:#6C5CE7;color:#FFF;font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px">Чертёж найден</div>
+      <div style="width:390px;height:800px;background:repeating-linear-gradient(115deg,#2A2B36 0 22px,#262731 22px 44px);border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;position:relative">
+        <div style="position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:16px 26px;font-size:13px;font-weight:700;color:#FFF;z-index:1"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="flex:1;position:relative">
+          <div style="position:absolute;inset:130px 26px 300px;border-radius:18px;border:2px solid #6C5CE7;background:rgba(108,92,231,.1)"></div>
+          <div style="position:absolute;top:94px;left:0;right:0;text-align:center;color:#FFF;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600">Чертёж найден</div>
         </div>
         <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,16,22,0) 40%,rgba(15,16,22,.9) 62%,#0F1016 78%);display:flex;flex-direction:column;justify-content:flex-end">
           <div style="padding:0 22px 30px;display:flex;flex-direction:column;gap:14px">
@@ -115,54 +115,23 @@ a{color:#6C5CE7}a:hover{color:#4B3ED6}
         <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">6c</span>
         <span style="font-size:14px;font-weight:600">Сканер, переработанный (заменяет 1c)</span>
       </div>
-      <div style="width:390px;height:800px;background:#0F1016;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;position:relative">
-        <div style="display:flex;justify-content:space-between;padding:16px 26px 8px;font-size:13px;font-weight:700;color:#FFF"><span>9:41</span><span>▮▮▮ 84%</span></div>
+      <div style="width:390px;height:800px;background:repeating-linear-gradient(115deg,#2A2B36 0 22px,#262731 22px 44px);border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);position:relative">
+        <div style="position:absolute;inset:186px 26px 214px;border-radius:18px;box-shadow:0 0 0 9999px rgba(15,16,22,.55)"></div>
+        <div style="position:absolute;top:186px;left:26px;width:30px;height:30px;border-top:3px solid #FFF;border-left:3px solid #FFF;border-radius:18px 0 0 0"></div>
+        <div style="position:absolute;top:186px;right:26px;width:30px;height:30px;border-top:3px solid #FFF;border-right:3px solid #FFF;border-radius:0 18px 0 0"></div>
+        <div style="position:absolute;bottom:214px;left:26px;width:30px;height:30px;border-bottom:3px solid #FFF;border-left:3px solid #FFF;border-radius:0 0 0 18px"></div>
+        <div style="position:absolute;bottom:214px;right:26px;width:30px;height:30px;border-bottom:3px solid #FFF;border-right:3px solid #FFF;border-radius:0 0 18px 0"></div>
 
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 20px 10px">
-          <div style="width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.12);color:#FFF;display:flex;align-items:center;justify-content:center;font-size:16px">✕</div>
-          <div style="display:flex;gap:8px">
-            <div style="width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.12);color:#FFF;display:flex;align-items:center;justify-content:center;font-size:15px">⚡</div>
-            <div style="width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.12);color:#FFF;display:flex;align-items:center;justify-content:center;font-size:15px">?</div>
-          </div>
-        </div>
+        <div style="position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:16px 26px;font-size:13px;font-weight:700;color:#FFF"><span>9:41</span><span>▮▮▮ 84%</span></div>
 
-        <div style="flex:1;margin:0 12px;border-radius:28px;background:repeating-linear-gradient(115deg,#2A2B36 0 22px,#262731 22px 44px);position:relative;overflow:hidden">
-          <div style="position:absolute;inset:0;background:rgba(15,16,22,.5)"></div>
-          <div style="position:absolute;inset:88px 20px 150px;border-radius:16px;box-shadow:0 0 0 9999px rgba(15,16,22,.5)"></div>
-          <div style="position:absolute;top:88px;left:20px;width:34px;height:34px;border-top:4px solid #FFC94A;border-left:4px solid #FFC94A;border-radius:16px 0 0 0"></div>
-          <div style="position:absolute;top:88px;right:20px;width:34px;height:34px;border-top:4px solid #FFC94A;border-right:4px solid #FFC94A;border-radius:0 16px 0 0"></div>
-          <div style="position:absolute;bottom:150px;left:20px;width:34px;height:34px;border-bottom:4px solid #FFC94A;border-left:4px solid #FFC94A;border-radius:0 0 0 16px"></div>
-          <div style="position:absolute;bottom:150px;right:20px;width:34px;height:34px;border-bottom:4px solid #FFC94A;border-right:4px solid #FFC94A;border-radius:0 0 16px 0"></div>
-          <div style="position:absolute;top:200px;left:20px;right:20px;height:3px;background:linear-gradient(90deg,rgba(255,201,74,0),#FFC94A,rgba(255,201,74,0))"></div>
+        <div style="position:absolute;top:62px;left:26px;width:40px;height:40px;border-radius:999px;background:rgba(255,255,255,.14);color:#FFF;display:flex;align-items:center;justify-content:center;font-size:17px">✕</div>
 
-          <div style="position:absolute;top:44px;left:0;right:0;display:flex;justify-content:center">
-            <div style="background:rgba(46,211,160,.16);border:1px solid #2ED3A0;color:#2ED3A0;font-size:12.5px;font-weight:700;padding:7px 13px;border-radius:999px">Текст в фокусе · можно снимать</div>
-          </div>
+        <div style="position:absolute;top:132px;left:0;right:0;text-align:center;color:#FFF;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600">Наведите на условие</div>
 
-          <div style="position:absolute;bottom:88px;left:20px;right:20px;display:flex;flex-direction:column;gap:8px">
-            <div style="background:rgba(255,255,255,.1);backdrop-filter:blur(10px);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px">
-              <div style="width:30px;height:30px;flex:none;border-radius:10px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:14px">△</div>
-              <div style="flex:1;color:#FFF;font-size:13.5px;line-height:1.45">Похоже на геометрию — <b>чертёж распознаем в Pro</b></div>
-            </div>
-          </div>
-        </div>
-
-        <div style="padding:14px 0 8px;display:flex;justify-content:center;gap:8px">
-          <div style="background:#FFF;color:#14151A;border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:700">Задача</div>
-          <div style="background:rgba(255,255,255,.12);color:#FFF;border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:600">Чертёж</div>
-          <div style="background:rgba(255,255,255,.12);color:#FFF;border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:600">График</div>
-          <div style="background:rgba(255,255,255,.12);color:#FFF;border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:600">Страница</div>
-        </div>
-
-        <div style="padding:6px 26px 26px;display:flex;align-items:center;justify-content:space-between">
-          <div style="width:56px;height:56px;border-radius:18px;background:repeating-linear-gradient(115deg,#3A3B45 0 8px,#33343E 8px 16px);border:1.5px solid rgba(255,255,255,.2)"></div>
-          <div style="width:82px;height:82px;border-radius:999px;background:#FFF;border:6px solid #6C5CE7;display:flex;align-items:center;justify-content:center">
-            <div style="width:54px;height:54px;border-radius:999px;background:#6C5CE7"></div>
-          </div>
-          <div style="width:56px;height:56px;border-radius:18px;background:rgba(255,255,255,.12);color:#FFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
-            <div style="font-size:16px">⌨</div>
-            <div style="font-size:9.5px;font-weight:700">Ввод</div>
-          </div>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:22px 26px 34px;display:flex;align-items:center;justify-content:space-between">
+          <div style="width:52px;height:52px;border-radius:16px;background:repeating-linear-gradient(115deg,#3A3B45 0 8px,#33343E 8px 16px);border:1px solid rgba(255,255,255,.18)"></div>
+          <div style="width:84px;height:84px;border-radius:999px;background:#FFF"></div>
+          <div style="width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.14);color:#FFF;display:flex;align-items:center;justify-content:center;font-size:19px">⌨</div>
         </div>
       </div>
     </div>

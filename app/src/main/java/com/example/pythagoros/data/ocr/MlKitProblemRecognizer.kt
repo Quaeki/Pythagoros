@@ -52,6 +52,16 @@ class MlKitProblemRecognizer(
         )
     }
 
+    /**
+     * Тип задачи по снимку — считается локально и сразу после затвора (макет 6c):
+     * по нему решается, показывать ли Pro-гейт `6b` вместо платного разбора.
+     */
+    suspend fun classify(imagePath: String): ProblemType {
+        val image = InputImage.fromFilePath(context, Uri.fromFile(File(imagePath)))
+        val rawText = recognizer.process(image).await().text.trim()
+        return if (rawText.isBlank()) ProblemType.Unknown else classifyProblem(rawText)
+    }
+
     private fun normalizeReadableText(rawText: String): String =
         rawText.lineSequence()
             .map { it.trim() }

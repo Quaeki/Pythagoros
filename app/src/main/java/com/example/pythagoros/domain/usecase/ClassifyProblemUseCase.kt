@@ -2,6 +2,7 @@ package com.example.pythagoros.domain.usecase
 
 import com.example.pythagoros.domain.model.Expression
 import com.example.pythagoros.domain.model.ProblemType
+import javax.inject.Inject
 
 /**
  * Определяет тип задачи по выражению — от него зависят чипы на экране «Проверьте условие»,
@@ -10,7 +11,7 @@ import com.example.pythagoros.domain.model.ProblemType
  * Возвращает [ProblemType.Unknown], если тип распознать не удалось: пользователь сможет
  * задать его вручную через чип «Изменить тип».
  */
-class ClassifyProblemUseCase {
+class ClassifyProblemUseCase @Inject constructor() {
 
     operator fun invoke(expression: Expression): ProblemType =
         classify(expression.source)

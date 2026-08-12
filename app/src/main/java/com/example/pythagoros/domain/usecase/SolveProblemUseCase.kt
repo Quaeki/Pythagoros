@@ -5,10 +5,11 @@ import com.example.pythagoros.domain.model.ProblemType
 import com.example.pythagoros.domain.model.SolveResult
 import com.example.pythagoros.domain.solver.CasSolver
 import com.example.pythagoros.domain.solver.LocalSolver
+import javax.inject.Inject
 
-class SolveProblemUseCase(
-    private val localSolver: LocalSolver = LocalSolver(),
-    private val casSolver: CasSolver = CasSolver(),
+class SolveProblemUseCase @Inject constructor(
+    private val localSolver: LocalSolver,
+    private val casSolver: CasSolver,
 ) {
     operator fun invoke(expression: Expression, problemType: ProblemType): SolveResult {
         val localResult = localSolver.solve(expression, problemType)

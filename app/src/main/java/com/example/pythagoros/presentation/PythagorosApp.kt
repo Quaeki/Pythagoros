@@ -21,20 +21,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.example.pythagoros.BuildConfig
-import com.example.pythagoros.data.ai.BackendPremiumAiSolver
 import com.example.pythagoros.data.ai.toMappedSolution
 import com.example.pythagoros.data.auth.AuthRequestCodeResult
 import com.example.pythagoros.data.auth.AuthProviderSignInResult
 import com.example.pythagoros.data.auth.AuthVerifyCodeResult
-import com.example.pythagoros.data.auth.BackendAuthClient
-import com.example.pythagoros.data.auth.GoogleFirebaseAuthClient
 import com.example.pythagoros.data.auth.GoogleFirebaseSignInResult
 import com.example.pythagoros.data.auth.ProviderIdentity
 import com.example.pythagoros.data.billing.BillingProductPrice
 import com.example.pythagoros.data.billing.PlayBillingClient
-import com.example.pythagoros.data.history.HistoryRepository
-import com.example.pythagoros.data.history.PythagorosDatabase
-import com.example.pythagoros.data.prefs.AppPreferences
 import com.example.pythagoros.domain.ai.PremiumAiSolveRequest
 import com.example.pythagoros.domain.ai.PremiumAiSolveResult
 import com.example.pythagoros.domain.math.MathState
@@ -48,9 +42,6 @@ import com.example.pythagoros.domain.model.Solution
 import com.example.pythagoros.domain.model.SolutionHistoryEntry
 import com.example.pythagoros.domain.model.SolveResult
 import com.example.pythagoros.domain.model.Visualization
-import com.example.pythagoros.domain.usecase.ClassifyProblemUseCase
-import com.example.pythagoros.domain.usecase.ParseExpressionUseCase
-import com.example.pythagoros.domain.usecase.SolveProblemUseCase
 import com.example.pythagoros.presentation.components.BottomTab
 import com.example.pythagoros.presentation.components.NavDirection
 import com.example.pythagoros.presentation.components.screenTransition
@@ -76,9 +67,8 @@ import com.example.pythagoros.presentation.screens.SplashScreen
 import com.example.pythagoros.presentation.screens.StepDetailSheet
 import com.example.pythagoros.presentation.screens.SubscriptionPlan
 import com.example.pythagoros.presentation.screens.VerifyScreen
-import kotlinx.coroutines.Dispatchers
+import com.example.pythagoros.presentation.viewmodel.PythagorosViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthResult
@@ -112,13 +102,13 @@ private data class OpenSolution(
 )
 
 @Composable
-fun PythagorosApp(modifier: Modifier = Modifier) {
+fun PythagorosApp(
+    modifier: Modifier = Modifier,
+    viewModel: PythagorosViewModel,
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val prefs = remember { AppPreferences(context) }
-    val historyRepository = remember {
-        HistoryRepository(PythagorosDatabase.get(context).historyDao())
-    }
+    val prefs = viewModel.prefs
 
     var stage by remember { mutableStateOf(Stage.Splash) }
     var tab by remember { mutableStateOf(BottomTab.Task) }
@@ -147,15 +137,8 @@ fun PythagorosApp(modifier: Modifier = Modifier) {
 
     val savedEntries = remember { mutableStateListOf<SolutionHistoryEntry>() }
 
-    val parseExpression = remember { ParseExpressionUseCase() }
-    val classifyProblem = remember { ClassifyProblemUseCase() }
-    val solveProblem = remember { SolveProblemUseCase() }
-    val premiumAiSolver = remember { BackendPremiumAiSolver() }
-    val authClient = remember { BackendAuthClient() }
-    val googleAuthClient = remember { GoogleFirebaseAuthClient(context) }
-
-    LaunchedEffect(historyRepository) {
-        historyRepository.observeAll().collect { entries ->
+    LaunchedEffect(viewModel) {
+        viewModel.historyEntries.collect { entries ->
             savedEntries.clear()
             savedEntries.addAll(entries)
         }
@@ -244,7 +227,7 @@ fun PythagorosApp(modifier: Modifier = Modifier) {
         authLoading = true
         authError = null
         scope.launch {
-            when (val result = authClient.signInWithProvider(identity)) {
+            when (val result = viewModel.signInWithProvider(identity)) {
                 is AuthProviderSignInResult.Success -> {
                     prefs.userId = result.userId
                     prefs.userPhone = result.phone.orEmpty()
@@ -317,7 +300,7 @@ fun PythagorosApp(modifier: Modifier = Modifier) {
         } == true
         if (duplicate) return
         val now = System.currentTimeMillis()
-        historyRepository.save(
+        viewModel.saveHistoryEntry(
             SolutionHistoryEntry(
                 id = now,
                 createdAtMillis = now,
@@ -349,7 +332,7 @@ fun PythagorosApp(modifier: Modifier = Modifier) {
             aiLoading = true
             aiError = null
             when (
-                val result = premiumAiSolver.solve(
+                val result = viewModel.solveWithAi(
                     PremiumAiSolveRequest(
                         expression = expression,
                         problemType = type,
@@ -389,13 +372,13 @@ fun PythagorosApp(modifier: Modifier = Modifier) {
      * приходят сюда, чтобы ветка «локальное ядро не берёт» была одна на оба входа.
      */
     suspend fun solveAndOpen(source: String) {
-        val expression = parseExpression(source).getOrNull()
+        val expression = viewModel.parse(source).getOrNull()
         if (expression == null) {
-            openAiFallback(Expression(source.trim()), classifyProblem(source))
+            openAiFallback(Expression(source.trim()), viewModel.classify(source))
             return
         }
-        val type = classifyProblem(expression)
-        when (val result = withContext(Dispatchers.Default) { solveProblem(expression, type) }) {
+        val type = viewModel.classify(expression)
+        when (val result = viewModel.solveLocal(expression, type)) {
             is SolveResult.Success -> {
                 val solution = result.solution
                 saveSolution(solution)
@@ -464,7 +447,7 @@ fun PythagorosApp(modifier: Modifier = Modifier) {
                     authError = null
                     authLoading = true
                     scope.launch {
-                        when (val result = authClient.requestCode(entered)) {
+                        when (val result = viewModel.requestCode(entered)) {
                             is AuthRequestCodeResult.Success -> {
                                 authRequestId = result.requestId
                                 authDebugCode = result.debugCode
@@ -484,7 +467,7 @@ fun PythagorosApp(modifier: Modifier = Modifier) {
                         authLoading = true
                         authError = null
                         scope.launch {
-                            when (val result = googleAuthClient.signIn()) {
+                            when (val result = viewModel.signInWithGoogle()) {
                                 is GoogleFirebaseSignInResult.Success -> {
                                     authLoading = false
                                     finishProviderSignIn(result.identity)
@@ -514,7 +497,7 @@ fun PythagorosApp(modifier: Modifier = Modifier) {
                     authError = null
                     authLoading = true
                     scope.launch {
-                        when (val result = authClient.verifyCode(authRequestId, code)) {
+                        when (val result = viewModel.verifyCode(authRequestId, code)) {
                             is AuthVerifyCodeResult.Success -> {
                                 prefs.userId = result.userId
                                 prefs.userPhone = result.phone
@@ -611,7 +594,7 @@ fun PythagorosApp(modifier: Modifier = Modifier) {
                     problemType = if (typed.isBlank()) {
                         ProblemType.Unknown
                     } else {
-                        classifyProblem(typed)
+                        viewModel.classify(typed)
                     },
                     suggestions = suggestionsFor(typed),
                     isPro = isPro,

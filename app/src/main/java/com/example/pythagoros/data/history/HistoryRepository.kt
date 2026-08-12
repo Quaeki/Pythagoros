@@ -10,8 +10,9 @@ import com.example.pythagoros.domain.model.SolutionStep
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.Base64
+import javax.inject.Inject
 
-class HistoryRepository(
+class HistoryRepository @Inject constructor(
     private val dao: HistoryDao,
 ) {
     fun observeAll(): Flow<List<SolutionHistoryEntry>> =

@@ -1,6 +1,7 @@
 package com.example.pythagoros.domain.usecase
 
 import com.example.pythagoros.domain.model.Expression
+import javax.inject.Inject
 
 /**
  * Разбирает строку, введённую или поправленную пользователем на экране «Проверьте условие».
@@ -8,7 +9,7 @@ import com.example.pythagoros.domain.model.Expression
  * Возвращает [Result], а не `Flow`: разбор синхронный и мгновенный, наблюдать тут не за чем.
  * Неудача — это синтаксическая ошибка ввода, её показывает то же поле формулы.
  */
-class ParseExpressionUseCase {
+class ParseExpressionUseCase @Inject constructor() {
 
     operator fun invoke(raw: String): Result<Expression> =
         runCatching {

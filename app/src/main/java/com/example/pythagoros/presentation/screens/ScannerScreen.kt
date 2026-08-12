@@ -6,19 +6,12 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -30,16 +23,15 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -49,6 +41,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,26 +50,24 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ClipOp
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.example.pythagoros.data.ocr.FrameInsight
-import com.example.pythagoros.data.ocr.LiveFrameAnalyzer
+import com.example.pythagoros.data.ocr.MlKitProblemRecognizer
 import com.example.pythagoros.domain.model.ProblemType
-import com.example.pythagoros.presentation.components.FootnoteText
 import com.example.pythagoros.presentation.components.Motion
 import com.example.pythagoros.presentation.components.PrimaryButton
 import com.example.pythagoros.presentation.components.ProBadge
@@ -88,37 +79,35 @@ import com.example.pythagoros.presentation.icons.PythIcons
 import com.example.pythagoros.ui.theme.Accent
 import com.example.pythagoros.ui.theme.AccentTint
 import com.example.pythagoros.ui.theme.Dark4
-import com.example.pythagoros.ui.theme.Dark5
 import com.example.pythagoros.ui.theme.Ink
-import com.example.pythagoros.ui.theme.Mint
 import com.example.pythagoros.ui.theme.ScannerBackground
 import com.example.pythagoros.ui.theme.SurfaceWhite
 import com.example.pythagoros.ui.theme.TextOnDarkSecondary
 import com.example.pythagoros.ui.theme.Warn
 import java.io.File
-import java.util.concurrent.Executors
+import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-/** Режимы съёмки: влияют на кроп кадра и на подсказку. */
-enum class CaptureMode(val title: String) {
-    Problem("Задача"),
-    Figure("Чертёж"),
-    Plot("График"),
-    Page("Страница"),
-}
+/** Рамка кадрирования 6c: отступы от краёв экрана, как в макете 390×800. */
+private val CropTop = 186.dp
+private val CropBottom = 214.dp
+private val CropSide = 26.dp
+private val CropRadius = 18.dp
+private val CropCorner = 30.dp
+private val CropStroke = 3.dp
 
-/** Статус фокуса над рамкой (макет 6c). */
-private enum class FocusState(val title: String) {
-    Searching("Ищем текст в рамке"),
-    Ready("Текст в фокусе · можно снимать"),
-}
+/** Рамка вокруг найденного чертежа (6b) — выше и уже, панель Pro занимает низ. */
+private val FigureTop = 130.dp
+private val FigureBottom = 300.dp
 
 /**
  * 6c. Сканер условия — заменяет прежний экран камеры.
  *
- * Тип задачи определяется по живому кадру локально (ML Kit), поэтому подсказка
- * и Pro-гейт появляются до нажатия затвора и до платного распознавания.
+ * В видоискателе нет ничего, кроме кадрирования и одной подписи: ни вспышки,
+ * ни режимов съёмки, ни живых подсказок. Тип задачи определяется локально уже
+ * после снимка — если это геометрия или физика без Pro, поверх кадра поднимается
+ * гейт 6b, и платное распознавание не запускается.
  */
 @Composable
 fun ScannerScreen(
@@ -128,16 +117,18 @@ fun ScannerScreen(
     onShutter: (String) -> Unit = {},
     onPickFromGallery: () -> Unit = {},
     onManualInput: () -> Unit = {},
-    onHelp: () -> Unit = {},
     onOpenPaywall: () -> Unit = {},
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val recognizer = remember(context) { MlKitProblemRecognizer(context.applicationContext) }
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
     var captureInProgress by remember { mutableStateOf(false) }
-    var flashOn by remember { mutableStateOf(false) }
-    var mode by remember { mutableStateOf(CaptureMode.Problem) }
-    var insight by remember { mutableStateOf(FrameInsight()) }
-    var gateDismissed by remember { mutableStateOf(false) }
+    // Путь снимка, упёршегося в Pro-гейт: он нужен кнопке «Показать только ответ».
+    var gate by remember { mutableStateOf<String?>(null) }
+    // Гейт уезжает вниз анимированно, а путь обнуляется сразу — тип задачи
+    // держим отдельно, иначе шторка на выходе меняла бы текст.
+    var gateType by remember { mutableStateOf(ProblemType.Geometry) }
 
     var hasCameraPermission by remember {
         mutableStateOf(
@@ -153,424 +144,260 @@ fun ScannerScreen(
         if (!hasCameraPermission) permissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
-    val proKind = insight.problemType.takeIf { it == ProblemType.Physics || it == ProblemType.Geometry }
-    val gateVisible = proKind != null && !isPro && !gateDismissed
-
-    // Кадр меняется каждые несколько миллисекунд, и тип задачи может пропасть
-    // прямо во время анимации ухода — последний известный держим отдельно.
-    var hintKind by remember { mutableStateOf(ProblemType.Physics) }
-    LaunchedEffect(proKind) {
-        if (proKind != null) hintKind = proKind
-    }
-
     SystemBarsAppearance(lightIcons = true)
     Box(
         modifier
             .fillMaxSize()
             .background(ScannerBackground)
     ) {
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(top = 44.dp)
-        ) {
-            Row(
+        if (hasCameraPermission) {
+            ScannerPreview(
+                onImageCaptureReady = { imageCapture = it },
+                modifier = Modifier.fillMaxSize(),
+            )
+        } else {
+            Column(
                 Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .padding(bottom = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+                    .fillMaxSize()
+                    .padding(26.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                GlassCircleButton(PythIcons.Close, "Закрыть", onClick = onClose)
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    GlassCircleButton(
-                        icon = PythIcons.Bolt,
-                        contentDescription = if (flashOn) "Выключить вспышку" else "Включить вспышку",
-                        tint = if (flashOn) Warn else SurfaceWhite,
-                        onClick = { flashOn = !flashOn },
-                    )
-                    GlassCircleButton(PythIcons.Question, "Как снимать", onClick = onHelp)
-                }
-            }
-
-            Box(
-                Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp)
-                    .clip(RoundedCornerShape(28.dp))
-                    .background(Dark5)
-            ) {
-                if (hasCameraPermission) {
-                    ScannerPreview(
-                        flashOn = flashOn,
-                        onImageCaptureReady = { imageCapture = it },
-                        onInsight = { insight = it },
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                } else {
-                    Column(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(26.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text(
-                            "Разрешите доступ к камере, чтобы снять условие",
-                            color = SurfaceWhite,
-                            fontSize = 15.sp,
-                            lineHeight = 22.sp,
-                        )
-                        Box(Modifier.height(14.dp))
-                        PrimaryButton("Разрешить", height = 48.dp, fontSize = 15.sp) {
-                            permissionLauncher.launch(Manifest.permission.CAMERA)
-                        }
-                    }
-                }
-
-                ScannerFrame(Modifier.fillMaxSize())
-
-                FocusPill(
-                    state = if (insight.hasText) FocusState.Ready else FocusState.Searching,
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 44.dp),
+                Text(
+                    "Разрешите доступ к камере, чтобы снять условие",
+                    color = SurfaceWhite,
+                    fontSize = 15.sp,
+                    lineHeight = 22.sp,
+                    textAlign = TextAlign.Center,
                 )
-
-                // Подсказка приходит от анализа кадра, то есть посреди наводки —
-                // выезд снизу читается спокойнее, чем мгновенное появление.
-                // Полное имя — иначе перегрузка разрешается в ColumnScope-вариант.
-                androidx.compose.animation.AnimatedVisibility(
-                    visible = proKind != null && !gateVisible,
-                    enter = slideInVertically(
-                        animationSpec = tween(Motion.Step, easing = Motion.Emphasized),
-                        initialOffsetY = { it / 2 },
-                    ) + fadeIn(tween(Motion.Step)),
-                    exit = fadeOut(tween(Motion.Step)),
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(horizontal = 20.dp)
-                        .padding(bottom = 88.dp),
-                ) {
-                    LiveHint(problemType = hintKind)
+                Box(Modifier.height(14.dp))
+                PrimaryButton("Разрешить", height = 48.dp, fontSize = 15.sp) {
+                    permissionLauncher.launch(Manifest.permission.CAMERA)
                 }
             }
+        }
 
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 14.dp, bottom = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-            ) {
-                CaptureMode.entries.forEach { item ->
-                    ModePill(item, active = item == mode, onClick = { mode = item })
-                }
-            }
+        // Кадрирование и управление живут только в режиме съёмки: под гейтом
+        // видоискатель показывает уже снятое, снимать поверх него нечего.
+        AnimatedVisibility(
+            visible = gate == null,
+            enter = fadeIn(tween(Motion.Scrim)),
+            exit = fadeOut(tween(Motion.Scrim)),
+        ) {
+            Box(Modifier.fillMaxSize()) {
+                CropOverlay(Modifier.fillMaxSize())
 
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 26.dp, end = 26.dp, top = 6.dp, bottom = 26.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                val galleryPress = rememberPressFeedback()
+                ViewfinderCaption("Наведите на условие", topPadding = CropTop - 54.dp)
+
+                val closePress = rememberPressFeedback()
                 Box(
                     Modifier
-                        .pressScale(galleryPress)
-                        .size(56.dp)
-                        .clip(RoundedCornerShape(18.dp))
-                        .background(Dark4)
-                        .border(1.5.dp, SurfaceWhite.copy(alpha = 0.2f), RoundedCornerShape(18.dp))
-                        .pressClickable(galleryPress, onClick = onPickFromGallery),
+                        .align(Alignment.TopStart)
+                        .statusBarsPadding()
+                        .padding(start = CropSide, top = 18.dp)
+                        .pressScale(closePress)
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(SurfaceWhite.copy(alpha = 0.14f))
+                        .pressClickable(closePress, onClick = onClose),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
-                        PythIcons.Gallery,
-                        contentDescription = "Выбрать из галереи",
+                        PythIcons.Close,
+                        contentDescription = "Закрыть сканер",
                         tint = SurfaceWhite,
-                        modifier = Modifier.size(22.dp),
+                        modifier = Modifier.size(17.dp),
                     )
                 }
 
-                val shutterPress = rememberPressFeedback(
-                    enabled = !captureInProgress,
-                    pressedScale = 0.9f,
-                )
-                Box(
+                // Панель плавает поверх превью, без собственного фона.
+                Row(
                     Modifier
-                        .pressScale(shutterPress)
-                        .size(82.dp)
-                        .clip(CircleShape)
-                        .background(SurfaceWhite)
-                        .border(6.dp, Accent, CircleShape)
-                        .pressClickable(shutterPress, enabled = !captureInProgress) {
-                            if (!hasCameraPermission) {
-                                permissionLauncher.launch(Manifest.permission.CAMERA)
-                                return@pressClickable
-                            }
-                            val capture = imageCapture ?: return@pressClickable
-                            captureInProgress = true
-                            takeScannerPhoto(
-                                context = context,
-                                imageCapture = capture,
-                                onSaved = { file ->
-                                    captureInProgress = false
-                                    onShutter(file.absolutePath)
-                                },
-                                onFailed = { captureInProgress = false },
-                            )
-                        },
-                    contentAlignment = Alignment.Center,
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(start = CropSide, end = CropSide, top = 22.dp, bottom = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    // Пока кадр сохраняется, «зрачок» затвора сжимается — снимок принят.
-                    val innerSize by androidx.compose.animation.core.animateDpAsState(
-                        targetValue = if (captureInProgress) 42.dp else 54.dp,
-                        animationSpec = tween(Motion.Press * 2, easing = Motion.Emphasized),
-                        label = "shutterCore",
+                    val galleryPress = rememberPressFeedback()
+                    Box(
+                        Modifier
+                            .pressScale(galleryPress)
+                            .size(52.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Dark4)
+                            .border(1.dp, SurfaceWhite.copy(alpha = 0.18f), RoundedCornerShape(16.dp))
+                            .pressClickable(galleryPress, onClick = onPickFromGallery),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            PythIcons.Gallery,
+                            contentDescription = "Выбрать из галереи",
+                            tint = SurfaceWhite,
+                            modifier = Modifier.size(22.dp),
+                        )
+                    }
+
+                    val shutterPress = rememberPressFeedback(
+                        enabled = !captureInProgress,
+                        pressedScale = 0.92f,
                     )
                     Box(
                         Modifier
-                            .size(innerSize)
+                            .pressScale(shutterPress)
+                            .size(84.dp)
                             .clip(CircleShape)
-                            .background(Accent)
+                            .background(SurfaceWhite)
+                            .pressClickable(shutterPress, enabled = !captureInProgress) {
+                                if (!hasCameraPermission) {
+                                    permissionLauncher.launch(Manifest.permission.CAMERA)
+                                    return@pressClickable
+                                }
+                                val capture = imageCapture ?: return@pressClickable
+                                captureInProgress = true
+                                takeScannerPhoto(
+                                    context = context,
+                                    imageCapture = capture,
+                                    onSaved = { file ->
+                                        scope.launch {
+                                            val path = file.absolutePath
+                                            // Классификация локальная и быстрая: платный разбор
+                                            // не должен уходить в сеть раньше, чем станет ясно,
+                                            // покажем ли мы гейт.
+                                            val type = runCatching { recognizer.classify(path) }
+                                                .getOrDefault(ProblemType.Unknown)
+                                            captureInProgress = false
+                                            if (!isPro && type.needsPro()) {
+                                                gateType = type
+                                                gate = path
+                                            } else {
+                                                onShutter(path)
+                                            }
+                                        }
+                                    },
+                                    onFailed = { captureInProgress = false },
+                                )
+                            },
                     )
-                }
 
-                val inputPress = rememberPressFeedback()
-                Column(
-                    Modifier
-                        .pressScale(inputPress)
-                        .size(56.dp)
-                        .clip(RoundedCornerShape(18.dp))
-                        .background(SurfaceWhite.copy(alpha = 0.12f))
-                        .pressClickable(inputPress, onClick = onManualInput),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Icon(
-                        PythIcons.Keyboard,
-                        contentDescription = null,
-                        tint = SurfaceWhite,
-                        modifier = Modifier.size(18.dp),
-                    )
-                    Text(
-                        "Ввод",
-                        color = SurfaceWhite,
-                        fontSize = 9.5.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = 2.dp),
-                    )
+                    val inputPress = rememberPressFeedback()
+                    Box(
+                        Modifier
+                            .pressScale(inputPress)
+                            .size(52.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(SurfaceWhite.copy(alpha = 0.14f))
+                            .pressClickable(inputPress, onClick = onManualInput),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            PythIcons.Keyboard,
+                            contentDescription = "Ввести условие вручную",
+                            tint = SurfaceWhite,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
                 }
             }
         }
 
         ScannerProGate(
-            visible = gateVisible,
-            problemType = hintKind,
+            visible = gate != null,
+            problemType = gateType,
             onSubscribe = onOpenPaywall,
-            onAnswerOnly = { gateDismissed = true },
-            onRetake = { gateDismissed = true },
-        )
-    }
-}
-
-/** Четыре угловых маркера, затемнение снаружи и бегущая линия сканирования. */
-@Composable
-private fun ScannerFrame(modifier: Modifier = Modifier) {
-    val progress by rememberInfiniteTransition(label = "scan").animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(2200, easing = LinearEasing), RepeatMode.Reverse),
-        label = "scanLine",
-    )
-
-    Canvas(modifier) {
-        val inset = Rect(
-            left = 20.dp.toPx(),
-            top = 88.dp.toPx(),
-            right = size.width - 20.dp.toPx(),
-            bottom = size.height - 150.dp.toPx(),
-        )
-        val radius = CornerRadius(16.dp.toPx())
-
-        val hole = Path().apply { addRoundRect(RoundRect(inset, radius)) }
-        clipPath(hole, clipOp = ClipOp.Difference) {
-            drawRect(ScannerBackground.copy(alpha = 0.5f))
-        }
-
-        val corner = 34.dp.toPx()
-        val stroke = 4.dp.toPx()
-        listOf(
-            Triple(inset.left, inset.top, 1f to 1f),
-            Triple(inset.right, inset.top, -1f to 1f),
-            Triple(inset.left, inset.bottom, 1f to -1f),
-            Triple(inset.right, inset.bottom, -1f to -1f),
-        ).forEach { (x, y, dir) ->
-            val (dx, dy) = dir
-            drawLine(
-                color = Warn,
-                start = Offset(x, y),
-                end = Offset(x + corner * dx, y),
-                strokeWidth = stroke,
-                cap = StrokeCap.Round,
-            )
-            drawLine(
-                color = Warn,
-                start = Offset(x, y),
-                end = Offset(x, y + corner * dy),
-                strokeWidth = stroke,
-                cap = StrokeCap.Round,
-            )
-        }
-
-        val lineY = inset.top + (inset.bottom - inset.top) * progress
-        drawLine(
-            brush = Brush.horizontalGradient(
-                0f to Warn.copy(alpha = 0f),
-                0.5f to Warn,
-                1f to Warn.copy(alpha = 0f),
-                startX = inset.left,
-                endX = inset.right,
-            ),
-            start = Offset(inset.left, lineY),
-            end = Offset(inset.right, lineY),
-            strokeWidth = 3.dp.toPx(),
-        )
-    }
-}
-
-@Composable
-private fun FocusPill(state: FocusState, modifier: Modifier = Modifier) {
-    val ready = state == FocusState.Ready
-    // Статус переключается по каждому проанализированному кадру: без перехода
-    // пилюля мигала бы зелёным на границе распознавания.
-    val fill by animateColorAsState(
-        targetValue = if (ready) Mint.copy(alpha = 0.16f) else SurfaceWhite.copy(alpha = 0.14f),
-        animationSpec = tween(Motion.Tint),
-        label = "focusFill",
-    )
-    val stroke by animateColorAsState(
-        targetValue = if (ready) Mint else Dark4,
-        animationSpec = tween(Motion.Tint),
-        label = "focusStroke",
-    )
-    val ink by animateColorAsState(
-        targetValue = if (ready) Mint else SurfaceWhite,
-        animationSpec = tween(Motion.Tint),
-        label = "focusInk",
-    )
-    Box(
-        modifier
-            .clip(CircleShape)
-            .background(fill)
-            .border(1.dp, stroke, CircleShape)
-            .padding(horizontal = 13.dp, vertical = 7.dp)
-    ) {
-        Text(
-            state.title,
-            color = ink,
-            fontSize = 12.5.sp,
-            fontWeight = FontWeight.Bold,
-        )
-    }
-}
-
-/** Стеклянная подсказка: что распознано в кадре и что за это даёт Pro. */
-@Composable
-private fun LiveHint(problemType: ProblemType, modifier: Modifier = Modifier) {
-    Row(
-        modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(SurfaceWhite.copy(alpha = 0.1f))
-            .padding(horizontal = 14.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        Box(
-            Modifier
-                .size(30.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(Accent),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                if (problemType == ProblemType.Geometry) PythIcons.Triangle else PythIcons.Bolt,
-                contentDescription = null,
-                tint = SurfaceWhite,
-                modifier = Modifier.size(15.dp),
-            )
-        }
-        Text(
-            buildString {
-                append(if (problemType == ProblemType.Geometry) "Похоже на геометрию" else "Похоже на физику")
-                append(" — разбор в Pro")
+            onAnswerOnly = {
+                val path = gate
+                gate = null
+                path?.let(onShutter)
             },
-            color = SurfaceWhite,
-            fontSize = 13.5.sp,
-            lineHeight = 19.5.sp,
+            onRetake = { gate = null },
         )
     }
 }
 
-@Composable
-private fun ModePill(mode: CaptureMode, active: Boolean, onClick: () -> Unit) {
-    val press = rememberPressFeedback()
-    val fill by animateColorAsState(
-        targetValue = if (active) SurfaceWhite else SurfaceWhite.copy(alpha = 0.12f),
-        animationSpec = tween(Motion.Tint),
-        label = "modeFill",
-    )
-    val ink by animateColorAsState(
-        targetValue = if (active) Ink else SurfaceWhite,
-        animationSpec = tween(Motion.Tint),
-        label = "modeInk",
-    )
-    Box(
-        Modifier
-            .pressScale(press)
-            .clip(CircleShape)
-            .background(fill)
-            .pressClickable(press, onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 9.dp)
-    ) {
-        Text(
-            mode.title,
-            color = ink,
-            fontSize = 13.5.sp,
-            fontWeight = if (active) FontWeight.Bold else FontWeight.SemiBold,
-        )
-    }
-}
+private fun ProblemType.needsPro(): Boolean =
+    this == ProblemType.Physics || this == ProblemType.Geometry
 
+/** Затемнение вокруг рамки и четыре угловых маркера. Статично, не анимируется. */
 @Composable
-private fun GlassCircleButton(
-    icon: ImageVector,
-    contentDescription: String,
-    modifier: Modifier = Modifier,
-    tint: Color = SurfaceWhite,
-    onClick: () -> Unit = {},
-) {
-    val press = rememberPressFeedback()
-    val iconTint by animateColorAsState(tint, tween(Motion.Tint), label = "glassTint")
-    Box(
-        modifier
-            .pressScale(press)
-            .size(38.dp)
-            .clip(CircleShape)
-            .background(SurfaceWhite.copy(alpha = 0.12f))
-            .pressClickable(press, onClick = onClick),
-        contentAlignment = Alignment.Center,
-    ) {
-        Icon(icon, contentDescription, tint = iconTint, modifier = Modifier.size(17.dp))
+private fun CropOverlay(modifier: Modifier = Modifier) {
+    Canvas(modifier) {
+        val crop = Rect(
+            left = CropSide.toPx(),
+            top = CropTop.toPx(),
+            right = size.width - CropSide.toPx(),
+            bottom = size.height - CropBottom.toPx(),
+        )
+        val radius = CropRadius.toPx()
+
+        val hole = Path().apply { addRoundRect(RoundRect(crop, CornerRadius(radius))) }
+        clipPath(hole, clipOp = ClipOp.Difference) {
+            drawRect(ScannerBackground.copy(alpha = 0.55f))
+        }
+
+        listOf(
+            Triple(crop.left, crop.top, 1f to 1f),
+            Triple(crop.right, crop.top, -1f to 1f),
+            Triple(crop.left, crop.bottom, 1f to -1f),
+            Triple(crop.right, crop.bottom, -1f to -1f),
+        ).forEach { (x, y, dir) ->
+            drawCropCorner(Offset(x, y), dir.first, dir.second, radius)
+        }
     }
 }
 
 /**
- * 6b. Pro-гейт прямо в сканере: условие уже видно, но разбор с чертежом — платный.
+ * Уголок рамки: два коротких луча со скруглением к внешнему углу — тот же
+ * радиус 18, что у выреза, поэтому маркер ложится ровно на его край.
+ */
+private fun DrawScope.drawCropCorner(corner: Offset, dx: Float, dy: Float, radius: Float) {
+    val leg = CropCorner.toPx()
+    val center = Offset(corner.x + radius * dx, corner.y + radius * dy)
+    val path = Path().apply {
+        moveTo(corner.x + leg * dx, corner.y)
+        lineTo(center.x, corner.y)
+        arcTo(
+            rect = Rect(center = center, radius = radius),
+            startAngleDegrees = if (dy > 0) 270f else 90f,
+            sweepAngleDegrees = -90f * dx * dy,
+            forceMoveTo = false,
+        )
+        lineTo(corner.x, corner.y + leg * dy)
+    }
+    drawPath(
+        path = path,
+        color = SurfaceWhite,
+        style = Stroke(width = CropStroke.toPx(), cap = StrokeCap.Round),
+    )
+}
+
+/**
+ * Единственная подпись видоискателя — общий язык для 6c и 6b.
+ *
+ * В макете это Space Grotesk, но кириллицы в нём нет, поэтому русский текст
+ * набираем интерфейсным шрифтом (см. `DisplayFont` в теме).
+ */
+@Composable
+private fun ViewfinderCaption(text: String, topPadding: Dp) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .padding(top = topPadding, start = CropSide, end = CropSide),
+        contentAlignment = Alignment.TopCenter,
+    ) {
+        Text(
+            text,
+            color = SurfaceWhite,
+            fontSize = 17.sp,
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+/**
+ * 6b. Pro-гейт прямо в сканере: условие уже снято, но разбор с чертежом — платный.
  * Ответ гейт не закрывает — на это есть кнопка «Показать только ответ».
  */
 @Composable
@@ -581,81 +408,96 @@ private fun ScannerProGate(
     onAnswerOnly: () -> Unit,
     onRetake: () -> Unit,
 ) {
+    val geometry = problemType == ProblemType.Geometry
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(tween(Motion.Scrim)),
         exit = fadeOut(tween(Motion.Scrim, delayMillis = Motion.Sheet - Motion.Scrim)),
     ) {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        0.40f to ScannerBackground.copy(alpha = 0f),
-                        0.62f to ScannerBackground.copy(alpha = 0.9f),
-                        0.78f to ScannerBackground,
-                    )
-                ),
-            contentAlignment = Alignment.BottomStart,
-        ) {
-            Column(
+        Box(Modifier.fillMaxSize()) {
+            // Тонкая рамка вокруг того, что нашли в кадре, и подпись над ней —
+            // тем же языком, что подсказка сканера.
+            Box(
                 Modifier
-                    .animateEnterExit(
-                        enter = slideInVertically(
-                            animationSpec = tween(Motion.Sheet, easing = Motion.Emphasized),
-                            initialOffsetY = { it / 3 },
-                        ),
-                        exit = slideOutVertically(
-                            animationSpec = tween(Motion.Sheet, easing = Motion.Accelerated),
-                            targetOffsetY = { it / 3 },
-                        ),
-                    )
-                    .fillMaxWidth()
-                    .padding(horizontal = 22.dp)
-                    .padding(bottom = 30.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp),
+                    .fillMaxSize()
+                    .padding(top = FigureTop, bottom = FigureBottom, start = CropSide, end = CropSide)
+                    .clip(RoundedCornerShape(CropRadius))
+                    .background(Accent.copy(alpha = 0.1f))
+                    .border(2.dp, Accent, RoundedCornerShape(CropRadius))
+            )
+            ViewfinderCaption(
+                if (geometry) "Чертёж найден" else "Задача по физике найдена",
+                topPadding = FigureTop - 36.dp,
+            )
+
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            0.40f to ScannerBackground.copy(alpha = 0f),
+                            0.62f to ScannerBackground.copy(alpha = 0.9f),
+                            0.78f to ScannerBackground,
+                        )
+                    ),
+                contentAlignment = Alignment.BottomStart,
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                Column(
+                    Modifier
+                        .animateEnterExit(
+                            enter = slideInVertically(
+                                animationSpec = tween(Motion.Sheet, easing = Motion.Emphasized),
+                                initialOffsetY = { it / 3 },
+                            ),
+                            exit = slideOutVertically(
+                                animationSpec = tween(Motion.Sheet, easing = Motion.Accelerated),
+                                targetOffsetY = { it / 3 },
+                            ),
+                        )
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(horizontal = 22.dp)
+                        .padding(bottom = 30.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
                 ) {
-                    ProBadge(background = AccentTint)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        ProBadge(background = AccentTint)
+                        Text(
+                            if (geometry) "Геометрия · треугольник" else "Физика · механика",
+                            color = TextOnDarkSecondary,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
                     Text(
-                        if (problemType == ProblemType.Geometry) "Геометрия · треугольник" else "Физика · механика",
-                        color = TextOnDarkSecondary,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        if (geometry) "На фото задача с чертежом" else "На фото задача по механике",
+                        color = SurfaceWhite,
+                        fontSize = 25.sp,
+                        lineHeight = 31.sp,
+                        fontWeight = FontWeight.Bold,
                     )
-                }
-                Text(
-                    if (problemType == ProblemType.Geometry) {
-                        "На фото задача с чертежом"
-                    } else {
-                        "На фото задача по механике"
-                    },
-                    color = SurfaceWhite,
-                    fontSize = 25.sp,
-                    lineHeight = 31.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    "AI из Pro построит чертёж по условию и покажет решение по шагам. " +
-                        "Условие уже распознано — откройте Pro, чтобы увидеть разбор.",
-                    color = TextOnDarkSecondary,
-                    fontSize = 14.5.sp,
-                    lineHeight = 22.5.sp,
-                )
-                PrimaryButton(
-                    text = "Открыть Pro — 7 дней бесплатно",
-                    background = Warn,
-                    contentColor = Ink,
-                    height = 56.dp,
-                    fontSize = 16.5.sp,
-                    onClick = onSubscribe,
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    GateSecondaryButton("Показать только ответ", Modifier.weight(1f), onAnswerOnly)
-                    GateSecondaryButton("Снять заново", Modifier.weight(1f), onRetake)
+                    Text(
+                        "AI из Pro построит чертёж по условию и покажет решение по шагам. " +
+                            "Условие уже распознано — откройте Pro, чтобы увидеть разбор.",
+                        color = TextOnDarkSecondary,
+                        fontSize = 14.5.sp,
+                        lineHeight = 22.5.sp,
+                    )
+                    PrimaryButton(
+                        text = "Открыть Pro — 7 дней бесплатно",
+                        background = Warn,
+                        contentColor = Ink,
+                        height = 56.dp,
+                        fontSize = 16.5.sp,
+                        onClick = onSubscribe,
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        GateSecondaryButton("Показать только ответ", Modifier.weight(1f), onAnswerOnly)
+                        GateSecondaryButton("Снять заново", Modifier.weight(1f), onRetake)
+                    }
                 }
             }
         }
@@ -682,9 +524,7 @@ private fun GateSecondaryButton(
 
 @Composable
 private fun ScannerPreview(
-    flashOn: Boolean,
     onImageCaptureReady: (ImageCapture) -> Unit,
-    onInsight: (FrameInsight) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -695,21 +535,16 @@ private fun ScannerPreview(
             scaleType = PreviewView.ScaleType.FILL_CENTER
         }
     }
-    val analysisExecutor = remember { Executors.newSingleThreadExecutor() }
 
-    LaunchedEffect(previewView, lifecycleOwner, flashOn) {
+    LaunchedEffect(previewView, lifecycleOwner) {
         val cameraProvider = context.awaitCameraProvider()
         val preview = Preview.Builder().build().also {
             it.setSurfaceProvider(previewView.surfaceProvider)
         }
         val capture = ImageCapture.Builder()
             .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-            .setFlashMode(if (flashOn) ImageCapture.FLASH_MODE_ON else ImageCapture.FLASH_MODE_OFF)
+            .setFlashMode(ImageCapture.FLASH_MODE_OFF)
             .build()
-        val analysis = ImageAnalysis.Builder()
-            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-            .build()
-            .also { it.setAnalyzer(analysisExecutor, LiveFrameAnalyzer(onInsight)) }
 
         cameraProvider.unbindAll()
         cameraProvider.bindToLifecycle(
@@ -717,7 +552,6 @@ private fun ScannerPreview(
             CameraSelector.DEFAULT_BACK_CAMERA,
             preview,
             capture,
-            analysis,
         )
         onImageCaptureReady(capture)
     }

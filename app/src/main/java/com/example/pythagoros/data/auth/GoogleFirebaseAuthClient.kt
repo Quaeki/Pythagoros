@@ -11,14 +11,17 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingExcept
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.android.gms.tasks.Task
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-class GoogleFirebaseAuthClient(
-    private val context: Context,
-    private val credentialManager: CredentialManager = CredentialManager.create(context),
+class GoogleFirebaseAuthClient @Inject constructor(
+    @ApplicationContext private val context: Context,
 ) {
+    private val credentialManager: CredentialManager = CredentialManager.create(context)
+
     suspend fun signIn(): GoogleFirebaseSignInResult {
         val serverClientId = BuildConfig.GOOGLE_WEB_CLIENT_ID
         if (serverClientId.isBlank()) {
