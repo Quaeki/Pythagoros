@@ -360,10 +360,13 @@ private fun FigureLayer(
     textMeasurer: TextMeasurer,
     modifier: Modifier = Modifier,
 ) {
-    Canvas(modifier.fillMaxWidth().aspectRatio(aspectRatio)) {
+    val ordered = remember(primitives) {
         // Подписи всегда поверх линий, иначе их перекрывают заливки фигур.
-        val ordered = primitives.filterNot { it is FigurePrimitive.Label } +
+        primitives.filterNot { it is FigurePrimitive.Label } +
             primitives.filterIsInstance<FigurePrimitive.Label>()
+    }
+
+    Canvas(modifier.fillMaxWidth().aspectRatio(aspectRatio)) {
         ordered.forEach { primitive ->
             when (primitive) {
                 is FigurePrimitive.Polygon -> drawFigurePolygon(primitive)

@@ -3,12 +3,15 @@ package com.example.pythagoros.presentation.screens
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.AnimatedVisibility
@@ -37,10 +40,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -66,7 +71,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.example.pythagoros.data.ocr.MlKitProblemRecognizer
 import com.example.pythagoros.domain.model.ProblemType
 import com.example.pythagoros.presentation.components.Motion
 import com.example.pythagoros.presentation.components.PrimaryButton
@@ -118,10 +122,10 @@ fun ScannerScreen(
     onPickFromGallery: () -> Unit = {},
     onManualInput: () -> Unit = {},
     onOpenPaywall: () -> Unit = {},
+    onClassifyImage: suspend (String) -> ProblemType = { ProblemType.Unknown },
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val recognizer = remember(context) { MlKitProblemRecognizer(context.applicationContext) }
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
     var captureInProgress by remember { mutableStateOf(false) }
     // Путь снимка, упёршегося в Pro-гейт: он нужен кнопке «Показать только ответ».
@@ -265,7 +269,7 @@ fun ScannerScreen(
                                             // Классификация локальная и быстрая: платный разбор
                                             // не должен уходить в сеть раньше, чем станет ясно,
                                             // покажем ли мы гейт.
-                                            val type = runCatching { recognizer.classify(path) }
+                                            val type = runCatching { onClassifyImage(path) }
                                                 .getOrDefault(ProblemType.Unknown)
                                             captureInProgress = false
                                             if (!isPro && type.needsPro()) {
@@ -524,11 +528,13 @@ private fun GateSecondaryButton(
 
 @Composable
 private fun ScannerPreview(
-    onImageCaptureReady: (ImageCapture) -> Unit,
+    onImageCaptureReady: (ImageCapture?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    var boundCameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
+    val currentCameraProvider by rememberUpdatedState(boundCameraProvider)
     val previewView = remember {
         PreviewView(context).apply {
             implementationMode = PreviewView.ImplementationMode.COMPATIBLE
@@ -538,12 +544,24 @@ private fun ScannerPreview(
 
     LaunchedEffect(previewView, lifecycleOwner) {
         val cameraProvider = context.awaitCameraProvider()
+        boundCameraProvider = cameraProvider
         val preview = Preview.Builder().build().also {
             it.setSurfaceProvider(previewView.surfaceProvider)
         }
         val capture = ImageCapture.Builder()
             .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
             .setFlashMode(ImageCapture.FLASH_MODE_OFF)
+            .setResolutionSelector(
+                ResolutionSelector.Builder()
+                    .setResolutionStrategy(
+                        ResolutionStrategy(
+                            Size(1280, 960),
+                            ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER_THEN_HIGHER,
+                        )
+                    )
+                    .build()
+            )
+            .setJpegQuality(85)
             .build()
 
         cameraProvider.unbindAll()
@@ -554,6 +572,13 @@ private fun ScannerPreview(
             capture,
         )
         onImageCaptureReady(capture)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            onImageCaptureReady(null)
+            currentCameraProvider?.unbindAll()
+        }
     }
 
     AndroidView(factory = { previewView }, modifier = modifier)

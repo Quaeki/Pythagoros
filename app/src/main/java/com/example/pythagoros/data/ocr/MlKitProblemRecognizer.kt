@@ -3,8 +3,10 @@ package com.example.pythagoros.data.ocr
 import android.content.Context
 import android.net.Uri
 import com.example.pythagoros.domain.model.Expression
+import com.example.pythagoros.domain.model.ImageSource
 import com.example.pythagoros.domain.model.ProblemType
 import com.example.pythagoros.domain.model.RecognitionResult
+import com.example.pythagoros.domain.ocr.ProblemRecognizer
 import com.example.pythagoros.domain.usecase.ClassifyProblemUseCase
 import com.example.pythagoros.domain.usecase.ParseExpressionUseCase
 import com.google.android.gms.tasks.Task
@@ -18,15 +20,12 @@ import kotlin.coroutines.suspendCoroutine
 
 class MlKitProblemRecognizer(
     private val context: Context,
-) {
-    private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+) : ProblemRecognizer {
     private val parseExpression = ParseExpressionUseCase()
     private val classifyProblem = ClassifyProblemUseCase()
 
-    suspend fun recognize(imagePath: String): RecognitionResult {
-        val image = InputImage.fromFilePath(context, Uri.fromFile(File(imagePath)))
-        val result = recognizer.process(image).await()
-        val rawText = result.text.trim()
+    override suspend fun recognize(image: ImageSource): RecognitionResult {
+        val rawText = recognizeText(image.reference)
 
         if (rawText.isBlank()) {
             return RecognitionResult.Failure(RecognitionResult.Reason.NoFormulaFound)
@@ -56,10 +55,19 @@ class MlKitProblemRecognizer(
      * Тип задачи по снимку — считается локально и сразу после затвора (макет 6c):
      * по нему решается, показывать ли Pro-гейт `6b` вместо платного разбора.
      */
-    suspend fun classify(imagePath: String): ProblemType {
-        val image = InputImage.fromFilePath(context, Uri.fromFile(File(imagePath)))
-        val rawText = recognizer.process(image).await().text.trim()
+    override suspend fun classify(image: ImageSource): ProblemType {
+        val rawText = recognizeText(image.reference)
         return if (rawText.isBlank()) ProblemType.Unknown else classifyProblem(rawText)
+    }
+
+    private suspend fun recognizeText(imagePath: String): String {
+        val image = InputImage.fromFilePath(context, Uri.fromFile(File(imagePath)))
+        val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+        return try {
+            recognizer.process(image).await().text.trim()
+        } finally {
+            recognizer.close()
+        }
     }
 
     private fun normalizeReadableText(rawText: String): String =

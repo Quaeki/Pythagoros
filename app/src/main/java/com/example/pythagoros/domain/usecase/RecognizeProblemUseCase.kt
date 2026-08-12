@@ -1,16 +1,21 @@
 package com.example.pythagoros.domain.usecase
 
 import com.example.pythagoros.domain.model.ImageSource
+import com.example.pythagoros.domain.model.ProblemType
 import com.example.pythagoros.domain.model.RecognitionResult
+import com.example.pythagoros.domain.ocr.ProblemRecognizer
+import javax.inject.Inject
 
 /**
  * Распознаёт условие на снимке. Работает на устройстве — интернет нужен только AI-разбору.
- *
- * Реализация появится вместе с [com.example.pythagoros.domain.repository]-слоем поверх
- * on-device OCR (ML Kit text recognition).
  */
-class RecognizeProblemUseCase {
+class RecognizeProblemUseCase @Inject constructor(
+    private val problemRecognizer: ProblemRecognizer,
+) {
 
     suspend operator fun invoke(image: ImageSource): RecognitionResult =
-        TODO("Подключить OCR: распознать формулу, отметить неуверенные символы, угадать тип задачи")
+        problemRecognizer.recognize(image)
+
+    suspend fun classify(image: ImageSource): ProblemType =
+        problemRecognizer.classify(image)
 }

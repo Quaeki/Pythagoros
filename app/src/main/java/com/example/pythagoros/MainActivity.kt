@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import com.example.pythagoros.presentation.PythagorosApp
 import com.example.pythagoros.presentation.viewmodel.AuthViewModel
 import com.example.pythagoros.presentation.viewmodel.HistoryViewModel
+import com.example.pythagoros.presentation.viewmodel.NavigationViewModel
 import com.example.pythagoros.presentation.viewmodel.SolverViewModel
 import com.example.pythagoros.presentation.viewmodel.SubscriptionViewModel
 import com.example.pythagoros.ui.theme.PythagorosTheme
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
     private val solverViewModel: SolverViewModel by viewModels()
     private val historyViewModel: HistoryViewModel by viewModels()
     private val subscriptionViewModel: SubscriptionViewModel by viewModels()
+    private val navigationViewModel: NavigationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +38,7 @@ class MainActivity : ComponentActivity() {
                     solverViewModel = solverViewModel,
                     historyViewModel = historyViewModel,
                     subscriptionViewModel = subscriptionViewModel,
+                    navigationViewModel = navigationViewModel,
                     modifier = Modifier
                         .fillMaxSize()
                         .background(SurfaceWhite)

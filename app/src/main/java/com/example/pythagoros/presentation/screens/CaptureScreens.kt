@@ -1,5 +1,6 @@
 package com.example.pythagoros.presentation.screens
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,12 +38,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.pythagoros.data.ocr.MlKitProblemRecognizer
 import com.example.pythagoros.domain.model.Expression
 import com.example.pythagoros.domain.model.ProblemType
 import com.example.pythagoros.domain.model.RecognitionResult
@@ -83,15 +83,15 @@ fun RecognizingScreen(
     modifier: Modifier = Modifier,
     imagePath: String? = null,
     onClose: () -> Unit = {},
+    onRecognizeImage: suspend (String) -> RecognitionResult = {
+        RecognitionResult.Failure(RecognitionResult.Reason.NoFormulaFound)
+    },
     onRecognized: (RecognitionResult) -> Unit = {},
 ) {
-    val context = LocalContext.current
-    val recognizer = remember(context) { MlKitProblemRecognizer(context.applicationContext) }
-
     LaunchedEffect(imagePath) {
         val result = runCatching {
             if (imagePath != null) {
-                recognizer.recognize(imagePath)
+                onRecognizeImage(imagePath)
             } else {
                 RecognitionResult.Success(
                     expression = Expression(SampleEquation),
@@ -305,8 +305,13 @@ fun VerifyScreen(
 /** Превью снимка: сам кадр, если он есть, иначе плашка-заглушка. */
 @Composable
 private fun PhotoPreview(imagePath: String?, modifier: Modifier = Modifier) {
-    val bitmap = remember(imagePath) {
-        imagePath?.let { path -> runCatching { BitmapFactory.decodeFile(path) }.getOrNull() }
+    val density = LocalDensity.current
+    val targetWidth = with(density) { 360.dp.roundToPx() }
+    val targetHeight = with(density) { 150.dp.roundToPx() }
+    val bitmap = remember(imagePath, targetWidth, targetHeight) {
+        imagePath?.let { path ->
+            runCatching { decodePreviewBitmap(path, targetWidth, targetHeight) }.getOrNull()
+        }
     }
     Box(
         modifier
@@ -327,4 +332,32 @@ private fun PhotoPreview(imagePath: String?, modifier: Modifier = Modifier) {
             Text("фото условия", color = TextTertiary, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
         }
     }
+}
+
+private fun decodePreviewBitmap(path: String, reqWidth: Int, reqHeight: Int): Bitmap? {
+    val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+    BitmapFactory.decodeFile(path, bounds)
+    if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+
+    return BitmapFactory.decodeFile(
+        path,
+        BitmapFactory.Options().apply {
+            inSampleSize = calculateInSampleSize(bounds, reqWidth, reqHeight)
+            inPreferredConfig = Bitmap.Config.RGB_565
+        },
+    )
+}
+
+private fun calculateInSampleSize(
+    options: BitmapFactory.Options,
+    reqWidth: Int,
+    reqHeight: Int,
+): Int {
+    var sample = 1
+    var halfWidth = options.outWidth / 2
+    var halfHeight = options.outHeight / 2
+    while (halfWidth / sample >= reqWidth && halfHeight / sample >= reqHeight) {
+        sample *= 2
+    }
+    return sample.coerceAtLeast(1)
 }

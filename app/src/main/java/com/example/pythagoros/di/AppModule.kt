@@ -6,7 +6,9 @@ import com.example.pythagoros.data.ai.BackendPremiumAiSolver
 import com.example.pythagoros.data.auth.BackendAuthClient
 import com.example.pythagoros.data.history.HistoryDao
 import com.example.pythagoros.data.history.PythagorosDatabase
+import com.example.pythagoros.data.ocr.MlKitProblemRecognizer
 import com.example.pythagoros.domain.ai.PremiumAiSolver
+import com.example.pythagoros.domain.ocr.ProblemRecognizer
 import com.example.pythagoros.domain.solver.CasSolver
 import com.example.pythagoros.domain.solver.LocalSolver
 import dagger.Module
@@ -43,6 +45,11 @@ object AppModule {
     @Provides
     @Singleton
     fun providePremiumAiSolver(): PremiumAiSolver = BackendPremiumAiSolver()
+
+    @Provides
+    @Singleton
+    fun provideProblemRecognizer(@ApplicationContext context: Context): ProblemRecognizer =
+        MlKitProblemRecognizer(context)
 
     @Provides
     @Singleton

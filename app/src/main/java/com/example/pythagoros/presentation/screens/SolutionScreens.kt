@@ -180,7 +180,10 @@ fun SolutionScreen(
                     )
                 }
             }
-            items(steps.size) { index ->
+            items(
+                count = steps.size,
+                key = { index -> "${steps[index].title}:${steps[index].formula}:$index" },
+            ) { index ->
                 StepCard(
                     number = index + 1,
                     step = steps[index],
