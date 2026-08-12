@@ -27,7 +27,6 @@ import com.example.pythagoros.data.auth.AuthProviderSignInResult
 import com.example.pythagoros.data.auth.AuthVerifyCodeResult
 import com.example.pythagoros.data.auth.GoogleFirebaseSignInResult
 import com.example.pythagoros.data.auth.ProviderIdentity
-import com.example.pythagoros.data.billing.BillingProductPrice
 import com.example.pythagoros.data.billing.PlayBillingClient
 import com.example.pythagoros.domain.ai.PremiumAiSolveRequest
 import com.example.pythagoros.domain.ai.PremiumAiSolveResult
@@ -46,7 +45,6 @@ import com.example.pythagoros.presentation.components.BottomTab
 import com.example.pythagoros.presentation.components.NavDirection
 import com.example.pythagoros.presentation.components.screenTransition
 import com.example.pythagoros.presentation.screens.AiFallbackScreen
-import com.example.pythagoros.presentation.screens.DefaultPlans
 import com.example.pythagoros.presentation.screens.GraphHeroScreen
 import com.example.pythagoros.presentation.screens.HistoryScreen
 import com.example.pythagoros.presentation.screens.LanguageScreen
@@ -65,9 +63,11 @@ import com.example.pythagoros.presentation.screens.SmsCodeScreen
 import com.example.pythagoros.presentation.screens.SolutionScreen
 import com.example.pythagoros.presentation.screens.SplashScreen
 import com.example.pythagoros.presentation.screens.StepDetailSheet
-import com.example.pythagoros.presentation.screens.SubscriptionPlan
 import com.example.pythagoros.presentation.screens.VerifyScreen
-import com.example.pythagoros.presentation.viewmodel.PythagorosViewModel
+import com.example.pythagoros.presentation.viewmodel.AuthViewModel
+import com.example.pythagoros.presentation.viewmodel.HistoryViewModel
+import com.example.pythagoros.presentation.viewmodel.SolverViewModel
+import com.example.pythagoros.presentation.viewmodel.SubscriptionViewModel
 import kotlinx.coroutines.launch
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
@@ -104,20 +104,23 @@ private data class OpenSolution(
 @Composable
 fun PythagorosApp(
     modifier: Modifier = Modifier,
-    viewModel: PythagorosViewModel,
+    authViewModel: AuthViewModel,
+    solverViewModel: SolverViewModel,
+    historyViewModel: HistoryViewModel,
+    subscriptionViewModel: SubscriptionViewModel,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val prefs = viewModel.prefs
+    val prefs = authViewModel.prefs
 
     var stage by remember { mutableStateOf(Stage.Splash) }
     var tab by remember { mutableStateOf(BottomTab.Task) }
     val overlays = remember { mutableStateListOf<Overlay>() }
 
-    var isPro by remember { mutableStateOf(prefs.isPro) }
-    var subscriptionPlans by remember { mutableStateOf(DefaultPlans) }
-    var purchaseLoading by remember { mutableStateOf(false) }
-    var purchaseError by remember { mutableStateOf<String?>(null) }
+    val isPro = subscriptionViewModel.isPro
+    val subscriptionPlans = subscriptionViewModel.plans
+    val purchaseLoading = subscriptionViewModel.purchaseLoading
+    val purchaseError = subscriptionViewModel.purchaseError
     var phone by remember { mutableStateOf("") }
     var authRequestId by remember { mutableStateOf("") }
     var authDebugCode by remember { mutableStateOf<String?>(null) }
@@ -137,8 +140,8 @@ fun PythagorosApp(
 
     val savedEntries = remember { mutableStateListOf<SolutionHistoryEntry>() }
 
-    LaunchedEffect(viewModel) {
-        viewModel.historyEntries.collect { entries ->
+    LaunchedEffect(historyViewModel) {
+        historyViewModel.historyEntries.collect { entries ->
             savedEntries.clear()
             savedEntries.addAll(entries)
         }
@@ -184,16 +187,15 @@ fun PythagorosApp(
         PlayBillingClient(
             context = context,
             onEntitlementChanged = { active, _ ->
-                isPro = active
-                prefs.isPro = active
-                purchaseLoading = false
+                subscriptionViewModel.updatePro(active)
+                subscriptionViewModel.updatePurchaseLoading(false)
                 if (active && overlays.lastOrNull() == Overlay.Paywall) {
                     closeAll()
                 }
             },
             onPurchaseMessage = { message ->
-                purchaseLoading = false
-                purchaseError = message
+                subscriptionViewModel.updatePurchaseLoading(false)
+                subscriptionViewModel.updatePurchaseError(message)
             },
         )
     }
@@ -202,12 +204,12 @@ fun PythagorosApp(
         playBillingClient.start(
             onReady = {
                 playBillingClient.queryProductPrices { prices ->
-                    subscriptionPlans = DefaultPlans.withBillingPrices(prices)
+                    subscriptionViewModel.setPlansFromBilling(prices)
                 }
                 playBillingClient.restorePurchases()
             },
             onError = { message ->
-                purchaseError = message
+                subscriptionViewModel.updatePurchaseError(message)
             },
         )
         onDispose {
@@ -219,7 +221,7 @@ fun PythagorosApp(
         val uri = Uri.parse("https://play.google.com/store/account/subscriptions?package=${context.packageName}")
         val intent = Intent(Intent.ACTION_VIEW, uri)
         runCatching { context.startActivity(intent) }
-            .onFailure { purchaseError = "Не удалось открыть управление подпиской Google Play" }
+            .onFailure { subscriptionViewModel.updatePurchaseError("Не удалось открыть управление подпиской Google Play") }
     }
 
     fun finishProviderSignIn(identity: ProviderIdentity) {
@@ -227,7 +229,7 @@ fun PythagorosApp(
         authLoading = true
         authError = null
         scope.launch {
-            when (val result = viewModel.signInWithProvider(identity)) {
+            when (val result = authViewModel.signInWithProvider(identity)) {
                 is AuthProviderSignInResult.Success -> {
                     prefs.userId = result.userId
                     prefs.userPhone = result.phone.orEmpty()
@@ -300,7 +302,7 @@ fun PythagorosApp(
         } == true
         if (duplicate) return
         val now = System.currentTimeMillis()
-        viewModel.saveHistoryEntry(
+        historyViewModel.saveHistoryEntry(
             SolutionHistoryEntry(
                 id = now,
                 createdAtMillis = now,
@@ -332,7 +334,7 @@ fun PythagorosApp(
             aiLoading = true
             aiError = null
             when (
-                val result = viewModel.solveWithAi(
+                val result = solverViewModel.solveWithAi(
                     PremiumAiSolveRequest(
                         expression = expression,
                         problemType = type,
@@ -372,13 +374,13 @@ fun PythagorosApp(
      * приходят сюда, чтобы ветка «локальное ядро не берёт» была одна на оба входа.
      */
     suspend fun solveAndOpen(source: String) {
-        val expression = viewModel.parse(source).getOrNull()
+        val expression = solverViewModel.parse(source).getOrNull()
         if (expression == null) {
-            openAiFallback(Expression(source.trim()), viewModel.classify(source))
+            openAiFallback(Expression(source.trim()), solverViewModel.classify(source))
             return
         }
-        val type = viewModel.classify(expression)
-        when (val result = viewModel.solveLocal(expression, type)) {
+        val type = solverViewModel.classify(expression)
+        when (val result = solverViewModel.solveLocal(expression, type)) {
             is SolveResult.Success -> {
                 val solution = result.solution
                 saveSolution(solution)
@@ -447,7 +449,7 @@ fun PythagorosApp(
                     authError = null
                     authLoading = true
                     scope.launch {
-                        when (val result = viewModel.requestCode(entered)) {
+                        when (val result = authViewModel.requestCode(entered)) {
                             is AuthRequestCodeResult.Success -> {
                                 authRequestId = result.requestId
                                 authDebugCode = result.debugCode
@@ -467,7 +469,7 @@ fun PythagorosApp(
                         authLoading = true
                         authError = null
                         scope.launch {
-                            when (val result = viewModel.signInWithGoogle()) {
+                            when (val result = authViewModel.signInWithGoogle()) {
                                 is GoogleFirebaseSignInResult.Success -> {
                                     authLoading = false
                                     finishProviderSignIn(result.identity)
@@ -497,7 +499,7 @@ fun PythagorosApp(
                     authError = null
                     authLoading = true
                     scope.launch {
-                        when (val result = viewModel.verifyCode(authRequestId, code)) {
+                        when (val result = authViewModel.verifyCode(authRequestId, code)) {
                             is AuthVerifyCodeResult.Success -> {
                                 prefs.userId = result.userId
                                 prefs.userPhone = result.phone
@@ -594,7 +596,7 @@ fun PythagorosApp(
                     problemType = if (typed.isBlank()) {
                         ProblemType.Unknown
                     } else {
-                        viewModel.classify(typed)
+                        solverViewModel.classify(typed)
                     },
                     suggestions = suggestionsFor(typed),
                     isPro = isPro,
@@ -728,26 +730,26 @@ fun PythagorosApp(
                 purchaseError = purchaseError,
                 onClose = ::pop,
                 onRestore = {
-                    purchaseLoading = true
-                    purchaseError = null
+                    subscriptionViewModel.updatePurchaseLoading(true)
+                    subscriptionViewModel.updatePurchaseError(null)
                     playBillingClient.restorePurchases { restored ->
-                        purchaseLoading = false
+                        subscriptionViewModel.updatePurchaseLoading(false)
                         if (!restored) {
-                            purchaseError = "Активная подписка не найдена в Google Play"
+                            subscriptionViewModel.updatePurchaseError("Активная подписка не найдена в Google Play")
                         }
                     }
                 },
                 onSubscribe = { plan ->
                     val activity = context.findActivity()
                     if (activity == null) {
-                        purchaseError = "Не удалось открыть оплату: экран приложения не найден"
+                        subscriptionViewModel.updatePurchaseError("Не удалось открыть оплату: экран приложения не найден")
                     } else {
-                        purchaseLoading = true
-                        purchaseError = null
+                        subscriptionViewModel.updatePurchaseLoading(true)
+                        subscriptionViewModel.updatePurchaseError(null)
                         playBillingClient.launchPurchase(activity, plan.id) { message ->
                             if (message != null) {
-                                purchaseLoading = false
-                                purchaseError = message
+                                subscriptionViewModel.updatePurchaseLoading(false)
+                                subscriptionViewModel.updatePurchaseError(message)
                             }
                         }
                     }
@@ -773,21 +775,6 @@ fun PythagorosApp(
 private fun suggestionsFor(typed: String): List<String> = buildList {
     val isFormula = typed.none { it in 'а'..'я' || it in 'А'..'Я' }
     if (typed.isNotBlank() && isFormula && "=" !in typed) add("= 0")
-}
-
-private fun List<SubscriptionPlan>.withBillingPrices(prices: List<BillingProductPrice>): List<SubscriptionPlan> {
-    val pricesById = prices.associateBy { it.productId }
-    return map { plan ->
-        val billingPrice = pricesById[plan.id]?.formattedPrice ?: return@map plan
-        val limit = when (plan.id) {
-            PlayBillingClient.ProMaxMonthly -> "400 AI-задач"
-            else -> "150 AI-задач"
-        }
-        plan.copy(
-            price = "$billingPrice в месяц · $limit",
-            renewalText = "Потом $billingPrice в месяц. $limit обновляются каждый месяц.",
-        )
-    }
 }
 
 private tailrec fun Context.findActivity(): Activity? = when (this) {

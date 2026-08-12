@@ -3,6 +3,7 @@ package com.example.pythagoros.data.prefs
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Небольшие локальные настройки: пройден ли первый запуск, выбран ли язык, есть ли подписка.
@@ -10,6 +11,7 @@ import javax.inject.Inject
  * Статус Pro здесь — кэш ответа биллинга: источником истины остаётся Google Play,
  * но экранам нужно знать состояние сразу, до ответа сети.
  */
+@Singleton
 class AppPreferences @Inject constructor(@ApplicationContext context: Context) {
 
     private val prefs = context.applicationContext
