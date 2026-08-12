@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "985006506649",
+    "project_id": "pythagoros-8cef1",
+    "storage_bucket": "pythagoros-8cef1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985006506649:android:fcb63f9f9a5f0f4150ee08",
+        "android_client_info": {
+          "package_name": "com.example.pythagoros"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985006506649-oois5k3jdh0vq007df4lgndca6qossbq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pythagoros",
+            "certificate_hash": "9f50e9722870b89b6ca9cbea39e0a50f19011186"
+          }
+        },
+        {
+          "client_id": "985006506649-vk650juvj29blb7l3iirfo6v8kb7uovo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtFzsGxsVF7XBtyConUDFFiyP7_eusmwQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "985006506649-vk650juvj29blb7l3iirfo6v8kb7uovo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

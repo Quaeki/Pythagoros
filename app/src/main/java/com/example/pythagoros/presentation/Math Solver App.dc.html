@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F2F1EC;font-family:Manrope,system-ui,sans-serif;color:#14151A}
+a{color:#6C5CE7}a:hover{color:#4B3ED6}
+@keyframes dash{to{stroke-dashoffset:0}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.25);opacity:1}}
+</style>
+</helmet>
+
+<section style="padding:56px 48px 40px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:baseline;gap:16px;font-family:'Space Grotesk',sans-serif">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6C5CE7">Тур 6</div>
+    <h1 style="margin:0;font-size:30px;font-weight:700">Pro-гейт при вводе и новый сканер</h1>
+  </div>
+  <p style="margin:0;max-width:720px;font-size:15px;line-height:1.6;color:#5A5B66;text-wrap:pretty">Приложение определяет тип задачи ещё до решения: <a href="#6a">6a</a> — при ручном вводе физики появляется шторка с Pro, <a href="#6b">6b</a> — то же в сканере: рамка распознала чертёж и предлагает Pro. <a href="#6c">6c</a> — переработанный сканер: режимы съёмки, автоопределение типа задачи, живые подсказки.</p>
+
+  <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+    <div id="6a" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">6a</span>
+        <span style="font-size:14px;font-weight:600">Ввод физики → шторка Pro</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA;position:relative">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 12px">
+          <div style="width:36px;height:36px;border-radius:12px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:17px">✕</div>
+          <div style="flex:1;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px">Ввести условие</div>
+        </div>
+        <div style="padding:0 20px 12px">
+          <div style="border:1.5px solid #14151A;border-radius:20px;padding:16px;min-height:88px;font-size:17px;line-height:1.5;font-weight:600">Брусок 2 кг на наклонной 30°, трение 0,2. Найти ускорение<span style="display:inline-block;width:2px;height:20px;background:#6C5CE7;vertical-align:-3px"></span></div>
+        </div>
+        <div style="padding:0 20px 12px;display:flex;gap:8px">
+          <div style="background:#FFF0C2;color:#8A6A00;border-radius:999px;padding:8px 13px;font-size:13.5px;font-weight:700">Похоже на физику · механика</div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="background:#F2F1EC;border-radius:26px 26px 0 0;padding:12px 12px 22px;display:flex;flex-direction:column;gap:10px;opacity:.4">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+            <div style="height:48px;border-radius:14px;background:#FFF"></div><div style="height:48px;border-radius:14px;background:#FFF"></div><div style="height:48px;border-radius:14px;background:#FFF"></div><div style="height:48px;border-radius:14px;background:#E8E6DE"></div>
+            <div style="height:48px;border-radius:14px;background:#FFF"></div><div style="height:48px;border-radius:14px;background:#FFF"></div><div style="height:48px;border-radius:14px;background:#FFF"></div><div style="height:48px;border-radius:14px;background:#E8E6DE"></div>
+          </div>
+        </div>
+
+        <div style="position:absolute;inset:0;background:rgba(20,21,26,.55);display:flex;flex-direction:column;justify-content:flex-end">
+          <div style="background:#14151A;border-radius:32px 32px 38px 38px;padding:16px 24px 28px;display:flex;flex-direction:column;gap:14px">
+            <div style="width:44px;height:5px;border-radius:999px;background:#33343E;align-self:center"></div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="background:#F4F2FF;color:#6C5CE7;font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;letter-spacing:.06em">PRO · AI</div>
+              <div style="color:#9A9BA6;font-size:13px;font-weight:600">Физика, механика</div>
+            </div>
+            <div style="color:#FFF;font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;line-height:1.25">Физику и геометрию решает AI из Pro</div>
+            <div style="color:#9A9BA6;font-size:14.5px;line-height:1.55">Он разберёт условие, построит схему сил и объяснит каждый шаг. Обычный решатель такие задачи не берёт.</div>
+            <div style="display:flex;flex-direction:column;gap:9px;padding:2px 0 4px">
+              <div style="display:flex;gap:10px;align-items:center">
+                <div style="width:20px;height:20px;flex:none;border-radius:999px;background:#FFC94A;color:#14151A;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">★</div>
+                <div style="color:#E6E6EA;font-size:14.5px">Чертёж и схема сил строятся по шагам</div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:center">
+                <div style="width:20px;height:20px;flex:none;border-radius:999px;background:#FFC94A;color:#14151A;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">★</div>
+                <div style="color:#E6E6EA;font-size:14.5px">Разбор с формулами и проверкой ответа</div>
+              </div>
+            </div>
+            <div style="height:56px;border-radius:18px;background:#FFC94A;color:#14151A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16.5px;font-family:'Space Grotesk',sans-serif;cursor:pointer">Попробовать 7 дней бесплатно</div>
+            <div style="height:50px;border-radius:16px;border:1.5px solid #33343E;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;cursor:pointer">Ввести другую задачу</div>
+            <div style="text-align:center;color:#8A8B96;font-size:12.5px;line-height:1.5">Потом 1 990 ₽ в год. Отменить можно в любой момент.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="6b" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">6b</span>
+        <span style="font-size:14px;font-weight:600">Сканер распознал геометрию → Pro</span>
+      </div>
+      <div style="width:390px;height:800px;background:#0F1016;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;position:relative">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700;color:#FFF"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="flex:1;margin:12px;border-radius:28px;background:repeating-linear-gradient(115deg,#2A2B36 0 22px,#262731 22px 44px);position:relative">
+          <div style="position:absolute;inset:70px 22px 200px;border:3px solid #6C5CE7;border-radius:18px;background:rgba(108,92,231,.12)"></div>
+          <div style="position:absolute;top:78px;left:30px;background:#6C5CE7;color:#FFF;font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px">Чертёж найден</div>
+        </div>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,16,22,0) 40%,rgba(15,16,22,.9) 62%,#0F1016 78%);display:flex;flex-direction:column;justify-content:flex-end">
+          <div style="padding:0 22px 30px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="background:#F4F2FF;color:#6C5CE7;font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;letter-spacing:.06em">PRO · AI</div>
+              <div style="color:#9A9BA6;font-size:13px;font-weight:600">Геометрия · треугольник</div>
+            </div>
+            <div style="color:#FFF;font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;line-height:1.25">На фото задача с чертежом</div>
+            <div style="color:#9A9BA6;font-size:14.5px;line-height:1.55">AI из Pro построит чертёж по условию и покажет решение по шагам. Условие уже распознано — откройте Pro, чтобы увидеть разбор.</div>
+            <div style="height:56px;border-radius:18px;background:#FFC94A;color:#14151A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16.5px;font-family:'Space Grotesk',sans-serif">Открыть Pro — 7 дней бесплатно</div>
+            <div style="display:flex;gap:10px">
+              <div style="flex:1;height:50px;border-radius:16px;border:1.5px solid #33343E;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14.5px">Показать только ответ</div>
+              <div style="flex:1;height:50px;border-radius:16px;border:1.5px solid #33343E;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14.5px">Снять заново</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="6c" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">6c</span>
+        <span style="font-size:14px;font-weight:600">Сканер, переработанный (заменяет 1c)</span>
+      </div>
+      <div style="width:390px;height:800px;background:#0F1016;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;position:relative">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 8px;font-size:13px;font-weight:700;color:#FFF"><span>9:41</span><span>▮▮▮ 84%</span></div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 20px 10px">
+          <div style="width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.12);color:#FFF;display:flex;align-items:center;justify-content:center;font-size:16px">✕</div>
+          <div style="display:flex;gap:8px">
+            <div style="width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.12);color:#FFF;display:flex;align-items:center;justify-content:center;font-size:15px">⚡</div>
+            <div style="width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.12);color:#FFF;display:flex;align-items:center;justify-content:center;font-size:15px">?</div>
+          </div>
+        </div>
+
+        <div style="flex:1;margin:0 12px;border-radius:28px;background:repeating-linear-gradient(115deg,#2A2B36 0 22px,#262731 22px 44px);position:relative;overflow:hidden">
+          <div style="position:absolute;inset:0;background:rgba(15,16,22,.5)"></div>
+          <div style="position:absolute;inset:88px 20px 150px;border-radius:16px;box-shadow:0 0 0 9999px rgba(15,16,22,.5)"></div>
+          <div style="position:absolute;top:88px;left:20px;width:34px;height:34px;border-top:4px solid #FFC94A;border-left:4px solid #FFC94A;border-radius:16px 0 0 0"></div>
+          <div style="position:absolute;top:88px;right:20px;width:34px;height:34px;border-top:4px solid #FFC94A;border-right:4px solid #FFC94A;border-radius:0 16px 0 0"></div>
+          <div style="position:absolute;bottom:150px;left:20px;width:34px;height:34px;border-bottom:4px solid #FFC94A;border-left:4px solid #FFC94A;border-radius:0 0 0 16px"></div>
+          <div style="position:absolute;bottom:150px;right:20px;width:34px;height:34px;border-bottom:4px solid #FFC94A;border-right:4px solid #FFC94A;border-radius:0 0 16px 0"></div>
+          <div style="position:absolute;top:200px;left:20px;right:20px;height:3px;background:linear-gradient(90deg,rgba(255,201,74,0),#FFC94A,rgba(255,201,74,0))"></div>
+
+          <div style="position:absolute;top:44px;left:0;right:0;display:flex;justify-content:center">
+            <div style="background:rgba(46,211,160,.16);border:1px solid #2ED3A0;color:#2ED3A0;font-size:12.5px;font-weight:700;padding:7px 13px;border-radius:999px">Текст в фокусе · можно снимать</div>
+          </div>
+
+          <div style="position:absolute;bottom:88px;left:20px;right:20px;display:flex;flex-direction:column;gap:8px">
+            <div style="background:rgba(255,255,255,.1);backdrop-filter:blur(10px);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px">
+              <div style="width:30px;height:30px;flex:none;border-radius:10px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:14px">△</div>
+              <div style="flex:1;color:#FFF;font-size:13.5px;line-height:1.45">Похоже на геометрию — <b>чертёж распознаем в Pro</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:14px 0 8px;display:flex;justify-content:center;gap:8px">
+          <div style="background:#FFF;color:#14151A;border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:700">Задача</div>
+          <div style="background:rgba(255,255,255,.12);color:#FFF;border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:600">Чертёж</div>
+          <div style="background:rgba(255,255,255,.12);color:#FFF;border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:600">График</div>
+          <div style="background:rgba(255,255,255,.12);color:#FFF;border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:600">Страница</div>
+        </div>
+
+        <div style="padding:6px 26px 26px;display:flex;align-items:center;justify-content:space-between">
+          <div style="width:56px;height:56px;border-radius:18px;background:repeating-linear-gradient(115deg,#3A3B45 0 8px,#33343E 8px 16px);border:1.5px solid rgba(255,255,255,.2)"></div>
+          <div style="width:82px;height:82px;border-radius:999px;background:#FFF;border:6px solid #6C5CE7;display:flex;align-items:center;justify-content:center">
+            <div style="width:54px;height:54px;border-radius:999px;background:#6C5CE7"></div>
+          </div>
+          <div style="width:56px;height:56px;border-radius:18px;background:rgba(255,255,255,.12);color:#FFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+            <div style="font-size:16px">⌨</div>
+            <div style="font-size:9.5px;font-weight:700">Ввод</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:16px 48px 40px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:baseline;gap:16px;font-family:'Space Grotesk',sans-serif">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6C5CE7">Тур 5</div>
+    <h1 style="margin:0;font-size:30px;font-weight:700">Математическая клавиатура</h1>
+  </div>
+  <p style="margin:0;max-width:720px;font-size:15px;line-height:1.6;color:#5A5B66;text-wrap:pretty">Ручной ввод вместо фото и правка распознанного условия: <a href="#5a">5a</a> основная раскладка с числами и операциями, <a href="#5b">5b</a> вкладка функций и греческих букв.</p>
+
+  <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+    <div id="5a" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">5a</span>
+        <span style="font-size:14px;font-weight:600">Ввод формулы: числа и операции</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 12px">
+          <div style="width:36px;height:36px;border-radius:12px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:17px">✕</div>
+          <div style="flex:1;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px">Ввести условие</div>
+          <div style="width:36px;height:36px;border-radius:12px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:16px">📷</div>
+        </div>
+
+        <div style="padding:0 20px 12px">
+          <div style="border:1.5px solid #14151A;border-radius:20px;padding:18px;min-height:88px;display:flex;flex-direction:column;gap:10px">
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:600;line-height:1.4;display:flex;align-items:center;flex-wrap:wrap;gap:2px">
+              <span>x²&nbsp;−&nbsp;4x&nbsp;+&nbsp;</span>
+              <span style="display:inline-block;width:2px;height:30px;background:#6C5CE7"></span>
+              <span style="color:#C9C7BF">&nbsp;= 0</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:0 20px 12px;display:flex;gap:8px;overflow:hidden">
+          <div style="background:#F4F2FF;border:1px solid #E0DBFF;color:#6C5CE7;border-radius:999px;padding:8px 13px;font-size:13.5px;font-weight:700;white-space:nowrap">Квадратное уравнение</div>
+          <div style="background:#F2F1EC;border-radius:999px;padding:8px 13px;font-size:13.5px;font-weight:600;white-space:nowrap">3 · x</div>
+          <div style="background:#F2F1EC;border-radius:999px;padding:8px 13px;font-size:13.5px;font-weight:600;white-space:nowrap">= 0</div>
+        </div>
+
+        <div style="flex:1"></div>
+
+        <div style="background:#F2F1EC;border-radius:26px 26px 0 0;padding:12px 12px 22px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:8px;padding:0 2px">
+            <div style="background:#14151A;color:#FFF;border-radius:999px;padding:8px 15px;font-size:13px;font-weight:700">123</div>
+            <div style="background:#FFF;border-radius:999px;padding:8px 15px;font-size:13px;font-weight:600">ƒ(x)</div>
+            <div style="background:#FFF;border-radius:999px;padding:8px 15px;font-size:13px;font-weight:600">αβγ</div>
+            <div style="background:#FFF;border-radius:999px;padding:8px 15px;font-size:13px;font-weight:600">ABC</div>
+          </div>
+
+          <div style="display:flex;gap:8px">
+            <div style="flex:3;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+              <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">7</div>
+              <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">8</div>
+              <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">9</div>
+              <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">4</div>
+              <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">5</div>
+              <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">6</div>
+              <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">1</div>
+              <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">2</div>
+              <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">3</div>
+              <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">0</div>
+              <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">,</div>
+              <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">π</div>
+            </div>
+            <div style="flex:2;display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+              <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600">+</div>
+              <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600">−</div>
+              <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600">×</div>
+              <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600">a⁄b</div>
+              <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600">xⁿ</div>
+              <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600">√</div>
+              <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600">( )</div>
+              <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600">=</div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px">
+            <div style="width:52px;height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">x</div>
+            <div style="width:52px;height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">y</div>
+            <div style="width:52px;height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 1px 0 rgba(20,21,26,.08)">←</div>
+            <div style="width:52px;height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 1px 0 rgba(20,21,26,.08)">→</div>
+            <div style="flex:1;height:52px;border-radius:14px;background:#FFE1E1;color:#D14343;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700">⌫</div>
+          </div>
+
+          <div style="height:56px;border-radius:18px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16.5px;font-family:'Space Grotesk',sans-serif">Решить</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="5b" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">5b</span>
+        <span style="font-size:14px;font-weight:600">Вкладка функций ƒ(x)</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 12px">
+          <div style="width:36px;height:36px;border-radius:12px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:17px">✕</div>
+          <div style="flex:1;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px">Ввести условие</div>
+          <div style="width:36px;height:36px;border-radius:12px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:16px">📷</div>
+        </div>
+        <div style="padding:0 20px 12px">
+          <div style="border:1.5px solid #14151A;border-radius:20px;padding:18px;min-height:88px;display:flex;align-items:center">
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:600;display:flex;align-items:center;gap:2px">
+              <span>∫ (3x² + 2x) dx</span>
+              <span style="display:inline-block;width:2px;height:30px;background:#6C5CE7"></span>
+            </div>
+          </div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="background:#F2F1EC;border-radius:26px 26px 0 0;padding:12px 12px 22px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:8px;padding:0 2px">
+            <div style="background:#FFF;border-radius:999px;padding:8px 15px;font-size:13px;font-weight:600">123</div>
+            <div style="background:#14151A;color:#FFF;border-radius:999px;padding:8px 15px;font-size:13px;font-weight:700">ƒ(x)</div>
+            <div style="background:#FFF;border-radius:999px;padding:8px 15px;font-size:13px;font-weight:600">αβγ</div>
+            <div style="background:#FFF;border-radius:999px;padding:8px 15px;font-size:13px;font-weight:600">ABC</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+            <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">sin</div>
+            <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">cos</div>
+            <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">tg</div>
+            <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">ctg</div>
+            <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">log</div>
+            <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">ln</div>
+            <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">eˣ</div>
+            <div style="height:52px;border-radius:14px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;box-shadow:0 1px 0 rgba(20,21,26,.08)">|x|</div>
+            <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600">∫</div>
+            <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600">d/dx</div>
+            <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600">Σ</div>
+            <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600">lim</div>
+            <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600">≤</div>
+            <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600">≥</div>
+            <div style="height:52px;border-radius:14px;background:#E8E6DE;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600">≠</div>
+            <div style="height:52px;border-radius:14px;background:#FFE1E1;color:#D14343;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700">⌫</div>
+          </div>
+          <div style="height:56px;border-radius:18px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16.5px;font-family:'Space Grotesk',sans-serif">Решить</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:16px 48px 40px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:baseline;gap:16px;font-family:'Space Grotesk',sans-serif">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6C5CE7">Тур 4</div>
+    <h1 style="margin:0;font-size:30px;font-weight:700">Pro: геометрия и физика с автоматическим чертежом</h1>
+  </div>
+  <p style="margin:0;max-width:720px;font-size:15px;line-height:1.6;color:#5A5B66;text-wrap:pretty">Тот же каркас решения, что и в <a href="#1a">1a</a>, но слот визуализации — чертёж, который строится по шагам: <a href="#4a">4a</a> геометрия, <a href="#4b">4b</a> физика с векторами, <a href="#4c">4c</a> как выглядит Pro-функция для бесплатного пользователя.</p>
+
+  <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+    <div id="4a" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">4a</span>
+        <span style="font-size:14px;font-weight:600">Геометрия: чертёж по условию</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 12px">
+          <div style="width:36px;height:36px;border-radius:12px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:17px">←</div>
+          <div style="flex:1;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px">Геометрия</div>
+          <div style="background:#F4F2FF;color:#6C5CE7;font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;letter-spacing:.06em">PRO · AI</div>
+        </div>
+        <div style="padding:0 20px 12px">
+          <div style="background:#F2F1EC;border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Условие</div>
+            <div style="font-size:16px;line-height:1.5;font-weight:600">В треугольнике ABC угол C = 90°, AC = 6, BC = 8. Найдите высоту CH, опущенную на гипотенузу.</div>
+          </div>
+        </div>
+        <div style="padding:0 20px 12px">
+          <div style="background:#14151A;border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="color:#FFF;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Чертёж строится</div>
+              <div style="color:#9A9BA6;font-size:12px;font-weight:600;white-space:nowrap">шаг 3 / 4</div>
+            </div>
+            <svg viewBox="0 0 300 210" style="width:100%;height:200px;display:block">
+              <polygon points="40,180 280,180 40,40" fill="rgba(108,92,231,.14)" stroke="#6C5CE7" stroke-width="4" stroke-linejoin="round"></polygon>
+              <line x1="40" y1="40" x2="126" y2="132" stroke="#FFC94A" stroke-width="4" stroke-dasharray="7 6"></line>
+              <rect x="40" y="156" width="24" height="24" fill="none" stroke="#2ED3A0" stroke-width="3"></rect>
+              <circle cx="126" cy="132" r="6" fill="#FFC94A"></circle>
+              <text x="24" y="34" fill="#FFF" font-size="15" font-family="Manrope" font-weight="700">C</text>
+              <text x="22" y="198" fill="#FFF" font-size="15" font-family="Manrope" font-weight="700">A</text>
+              <text x="284" y="198" fill="#FFF" font-size="15" font-family="Manrope" font-weight="700">B</text>
+              <text x="134" y="126" fill="#FFC94A" font-size="14" font-family="Manrope" font-weight="700">H</text>
+              <text x="14" y="115" fill="#9A9BA6" font-size="13" font-family="Manrope" font-weight="600">6</text>
+              <text x="160" y="200" fill="#9A9BA6" font-size="13" font-family="Manrope" font-weight="600">8</text>
+            </svg>
+          </div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:0 20px 8px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:12px;padding:14px;border-radius:18px;background:#FFF;border:1px solid #EFEDE6">
+            <div style="width:26px;height:26px;flex:none;border-radius:999px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">1</div>
+            <div style="font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif">Строим прямоугольный треугольник</div>
+          </div>
+          <div style="display:flex;gap:12px;padding:14px;border-radius:18px;background:#FFF;border:1px solid #EFEDE6">
+            <div style="width:26px;height:26px;flex:none;border-radius:999px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">2</div>
+            <div style="font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif">Гипотенуза по Пифагору: AB = 10</div>
+          </div>
+          <div style="display:flex;gap:12px;padding:14px;border-radius:18px;background:#F4F2FF;border:1px solid #6C5CE7">
+            <div style="width:26px;height:26px;flex:none;border-radius:999px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">3</div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif">Проводим высоту CH</div>
+              <div style="font-size:13.5px;line-height:1.5;color:#5A5B66">Высота из прямого угла делит гипотенузу на проекции. Площадь треугольника можно посчитать двумя способами — через катеты и через гипотенузу с высотой.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;padding:14px;border-radius:18px;background:#FFF;border:1px solid #EFEDE6;opacity:.5">
+            <div style="width:26px;height:26px;flex:none;border-radius:999px;background:#F2F1EC;color:#8A8B96;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">4</div>
+            <div style="font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif">CH = 6·8 / 10 = 4,8</div>
+          </div>
+        </div>
+        <div style="padding:8px 20px 26px;display:flex;flex-direction:column;gap:10px">
+          <div style="height:44px;border-radius:16px;border:1.5px solid #E4E2DA;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14.5px">Разобрать этот шаг подробно</div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div style="width:52px;height:52px;border-radius:18px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:20px">←</div>
+            <div style="flex:1;height:52px;border-radius:18px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;font-family:'Space Grotesk',sans-serif">Дальше →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="4b" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">4b</span>
+        <span style="font-size:14px;font-weight:600">Физика: схема сил</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 12px">
+          <div style="width:36px;height:36px;border-radius:12px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:17px">←</div>
+          <div style="flex:1;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px">Механика</div>
+          <div style="background:#F4F2FF;color:#6C5CE7;font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;letter-spacing:.06em">PRO · AI</div>
+        </div>
+        <div style="padding:0 20px 12px">
+          <div style="background:#F2F1EC;border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Условие</div>
+            <div style="font-size:16px;line-height:1.5;font-weight:600">Брусок массой 2 кг скользит по наклонной плоскости с углом 30°. Коэффициент трения 0,2. Найдите ускорение.</div>
+          </div>
+        </div>
+        <div style="padding:0 20px 12px">
+          <div style="background:#14151A;border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="color:#FFF;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Схема сил</div>
+              <div style="color:#9A9BA6;font-size:12px;font-weight:600;white-space:nowrap">шаг 2 / 5</div>
+            </div>
+            <svg viewBox="0 0 300 200" style="width:100%;height:190px;display:block">
+              <polygon points="20,175 280,175 280,45" fill="rgba(154,155,166,.12)" stroke="#3A3B45" stroke-width="3" stroke-linejoin="round"></polygon>
+              <rect x="150" y="88" width="46" height="30" rx="5" transform="rotate(-26.6 173 103)" fill="#6C5CE7"></rect>
+              <line x1="173" y1="103" x2="173" y2="172" stroke="#FFC94A" stroke-width="4"></line>
+              <polygon points="173,178 168,166 178,166" fill="#FFC94A"></polygon>
+              <line x1="173" y1="103" x2="122" y2="77" stroke="#2ED3A0" stroke-width="4"></line>
+              <polygon points="116,74 128,70 126,81" fill="#2ED3A0"></polygon>
+              <line x1="173" y1="103" x2="204" y2="65" stroke="#61A8FF" stroke-width="4"></line>
+              <polygon points="208,60 207,73 197,67" fill="#61A8FF"></polygon>
+              <text x="180" y="150" fill="#FFC94A" font-size="14" font-family="Manrope" font-weight="700">mg</text>
+              <text x="96" y="70" fill="#2ED3A0" font-size="14" font-family="Manrope" font-weight="700">Fтр</text>
+              <text x="210" y="58" fill="#61A8FF" font-size="14" font-family="Manrope" font-weight="700">N</text>
+              <text x="250" y="168" fill="#9A9BA6" font-size="13" font-family="Manrope" font-weight="600">30°</text>
+            </svg>
+          </div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:0 20px 8px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:12px;padding:14px;border-radius:18px;background:#FFF;border:1px solid #EFEDE6">
+            <div style="width:26px;height:26px;flex:none;border-radius:999px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">1</div>
+            <div style="font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif">Расставляем силы: mg, N, Fтр</div>
+          </div>
+          <div style="display:flex;gap:12px;padding:14px;border-radius:18px;background:#F4F2FF;border:1px solid #6C5CE7">
+            <div style="width:26px;height:26px;flex:none;border-radius:999px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">2</div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif">Разложение по осям</div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:#6C5CE7">ma = mg·sin30° − μ·mg·cos30°</div>
+              <div style="font-size:13.5px;line-height:1.5;color:#5A5B66">Ось X направляем вдоль наклонной. Вдоль неё тянет составляющая тяжести, тормозит трение.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;padding:14px;border-radius:18px;background:#FFF;border:1px solid #EFEDE6;opacity:.5">
+            <div style="width:26px;height:26px;flex:none;border-radius:999px;background:#F2F1EC;color:#8A8B96;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">3</div>
+            <div style="font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif">Подставляем числа</div>
+          </div>
+        </div>
+        <div style="padding:8px 20px 26px;display:flex;gap:10px;align-items:center">
+          <div style="width:52px;height:52px;border-radius:18px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:20px">←</div>
+          <div style="flex:1;height:52px;border-radius:18px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;font-family:'Space Grotesk',sans-serif">Дальше →</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="4c" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">4c</span>
+        <span style="font-size:14px;font-weight:600">Без Pro: чертёж закрыт</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 12px">
+          <div style="width:36px;height:36px;border-radius:12px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:17px">←</div>
+          <div style="flex:1;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px">Геометрия</div>
+        </div>
+        <div style="padding:0 20px 12px">
+          <div style="background:#F2F1EC;border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Условие</div>
+            <div style="font-size:16px;line-height:1.5;font-weight:600">В треугольнике ABC угол C = 90°, AC = 6, BC = 8. Найдите высоту CH, опущенную на гипотенузу.</div>
+          </div>
+        </div>
+        <div style="padding:0 20px 12px">
+          <div style="background:#14151A;border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center">
+            <div style="height:78px;width:100%;display:flex;align-items:center;justify-content:center;filter:blur(5px);opacity:.55">
+              <svg viewBox="0 0 300 140" style="width:100%;height:100%">
+                <polygon points="40,120 280,120 40,20" fill="rgba(108,92,231,.3)" stroke="#6C5CE7" stroke-width="4"></polygon>
+                <line x1="40" y1="20" x2="126" y2="86" stroke="#FFC94A" stroke-width="4"></line>
+              </svg>
+            </div>
+            <div style="color:#FFF;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;line-height:1.3">Чертёж и решение геометрии — в Pro</div>
+            <div style="color:#9A9BA6;font-size:14px;line-height:1.5">AI строит чертёж по условию и объясняет каждое построение.</div>
+            <div style="height:50px;width:100%;border-radius:16px;background:#FFC94A;color:#14151A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15.5px;font-family:'Space Grotesk',sans-serif">Открыть Pro — 7 дней бесплатно</div>
+          </div>
+        </div>
+        <div style="padding:0 20px;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Доступно бесплатно</div>
+          <div style="display:flex;gap:12px;padding:14px;border-radius:18px;background:#FFF;border:1px solid #EFEDE6">
+            <div style="width:26px;height:26px;flex:none;border-radius:999px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">1</div>
+            <div style="font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif">Ответ: CH = 4,8</div>
+          </div>
+          <div style="display:flex;gap:12px;padding:14px;border-radius:18px;background:#FAF9F5;border:1px dashed #D8D5CA;align-items:center">
+            <div style="font-size:16px">🔒</div>
+            <div style="font-size:14px;line-height:1.5;color:#8A8B96">Подробный вывод и построение доступны в Pro</div>
+          </div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="padding:0 20px 28px;font-size:12.5px;line-height:1.55;color:#8A8B96;text-align:center">Осталось 2 бесплатные задачи сегодня</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:16px 48px 40px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:baseline;gap:16px;font-family:'Space Grotesk',sans-serif">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6C5CE7">Тур 3</div>
+    <h1 style="margin:0;font-size:30px;font-weight:700">Вход в приложение: сплеш, язык, авторизация, подписка</h1>
+  </div>
+  <p style="margin:0;max-width:720px;font-size:15px;line-height:1.6;color:#5A5B66;text-wrap:pretty">Полный первый запуск по порядку: <a href="#3a">3a</a> сплеш → <a href="#3b">3b</a> выбор языка → <a href="#3c">3c</a> онбординг → <a href="#3d">3d</a> вход → <a href="#3e">3e</a> код из SMS → <a href="#3f">3f</a> уровень и цель → <a href="#3g">3g</a> подписка → <a href="#3h">3h</a> управление подпиской.</p>
+
+  <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+    <div id="3a" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">3a</span>
+        <span style="font-size:14px;font-weight:600">Сплеш</span>
+      </div>
+      <div style="width:390px;height:800px;background:#6C5CE7;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;position:relative">
+        <div style="position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:16px 26px;font-size:13px;font-weight:700;color:#FFF"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="width:104px;height:104px;border-radius:34px;background:#FFF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:46px;font-weight:700;color:#6C5CE7">ƒ</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;color:#FFF">Формула</div>
+          <div style="font-size:15px;font-weight:600;color:#D8D2FF">Сфотографируй — и всё станет понятно</div>
+        </div>
+        <div style="position:absolute;bottom:44px;width:150px;height:4px;border-radius:999px;background:rgba(255,255,255,.25);overflow:hidden">
+          <div style="width:64%;height:100%;background:#FFC94A;border-radius:999px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="3b" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">3b</span>
+        <span style="font-size:14px;font-weight:600">Выбор языка</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="padding:18px 20px 6px;font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700">Язык приложения</div>
+        <div style="padding:0 20px 16px;font-size:14.5px;line-height:1.55;color:#5A5B66">Можно поменять позже в профиле. Условия задач распознаём на любом из них.</div>
+        <div style="padding:0 20px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:12px;border:1.5px solid #6C5CE7;background:#F4F2FF;border-radius:18px;padding:15px 16px">
+            <div style="font-size:20px">🇷🇺</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+              <div style="font-size:16px;font-weight:700;font-family:'Space Grotesk',sans-serif">Русский</div>
+              <div style="font-size:12.5px;color:#8A8B96;font-weight:600">Определён по системе</div>
+            </div>
+            <div style="width:22px;height:22px;border-radius:999px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">✓</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;border:1.5px solid #E4E2DA;border-radius:18px;padding:15px 16px">
+            <div style="font-size:20px">🇰🇿</div>
+            <div style="flex:1;font-size:16px;font-weight:600;font-family:'Space Grotesk',sans-serif">Қазақша</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;border:1.5px solid #E4E2DA;border-radius:18px;padding:15px 16px">
+            <div style="font-size:20px">🇬🇧</div>
+            <div style="flex:1;font-size:16px;font-weight:600;font-family:'Space Grotesk',sans-serif">English</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;border:1.5px solid #E4E2DA;border-radius:18px;padding:15px 16px">
+            <div style="font-size:20px">🇺🇿</div>
+            <div style="flex:1;font-size:16px;font-weight:600;font-family:'Space Grotesk',sans-serif">Oʻzbekcha</div>
+          </div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="padding:16px 20px 28px">
+          <div style="height:54px;border-radius:18px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;font-family:'Space Grotesk',sans-serif">Продолжить</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="3c" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">3c</span>
+        <span style="font-size:14px;font-weight:600">Онбординг, 2 из 3</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="display:flex;justify-content:flex-end;padding:6px 20px 0"><div style="font-size:14px;font-weight:700;color:#8A8B96">Пропустить</div></div>
+        <div style="padding:14px 20px 0">
+          <div style="background:#14151A;border-radius:28px;height:300px;display:flex;align-items:center;justify-content:center;padding:20px">
+            <svg viewBox="0 0 300 220" style="width:100%;height:100%">
+              <line x1="14" y1="155" x2="290" y2="155" stroke="#3A3B45" stroke-width="2"></line>
+              <line x1="150" y1="14" x2="150" y2="210" stroke="#3A3B45" stroke-width="2"></line>
+              <path d="M20,20 Q150,380 280,20" fill="none" stroke="#2ED3A0" stroke-width="5" stroke-linecap="round" stroke-dasharray="620" stroke-dashoffset="180"></path>
+              <circle cx="85" cy="155" r="7" fill="#FFC94A"></circle>
+              <circle cx="215" cy="155" r="7" fill="#FFC94A"></circle>
+            </svg>
+          </div>
+        </div>
+        <div style="padding:26px 24px 0;display:flex;flex-direction:column;gap:12px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;line-height:1.2">График рисуется у тебя на глазах</div>
+          <div style="font-size:16px;line-height:1.6;color:#5A5B66;text-wrap:pretty">Не готовая картинка, а построение по шагам: сначала корни, потом вершина, потом кривая. Так запоминается.</div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="padding:0 24px 28px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;gap:7px">
+            <div style="width:10px;height:6px;border-radius:999px;background:#E4E2DA"></div>
+            <div style="width:26px;height:6px;border-radius:999px;background:#6C5CE7"></div>
+            <div style="width:10px;height:6px;border-radius:999px;background:#E4E2DA"></div>
+          </div>
+          <div style="height:54px;border-radius:18px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;font-family:'Space Grotesk',sans-serif">Дальше</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="3d" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">3d</span>
+        <span style="font-size:14px;font-weight:600">Вход</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="padding:8px 20px 0"><div style="width:36px;height:36px;border-radius:12px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:17px">←</div></div>
+        <div style="padding:20px 24px 0;display:flex;flex-direction:column;gap:10px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;line-height:1.2">Вход в Формулу</div>
+          <div style="font-size:15px;line-height:1.55;color:#5A5B66">История задач и прогресс сохранятся на всех устройствах.</div>
+        </div>
+        <div style="padding:24px 24px 0;display:flex;flex-direction:column;gap:12px">
+          <div style="border:1.5px solid #14151A;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:5px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Телефон</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:600">+7 900 123-45-67</div>
+          </div>
+          <div style="height:54px;border-radius:18px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;font-family:'Space Grotesk',sans-serif">Получить код</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 0">
+            <div style="flex:1;height:1px;background:#EFEDE6"></div>
+            <div style="font-size:12.5px;font-weight:600;color:#8A8B96">или</div>
+            <div style="flex:1;height:1px;background:#EFEDE6"></div>
+          </div>
+          <div style="height:54px;border-radius:18px;border:1.5px solid #E4E2DA;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:15.5px">
+            <span style="font-size:17px">G</span> Продолжить с Google
+          </div>
+          <div style="height:54px;border-radius:18px;border:1.5px solid #E4E2DA;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:15.5px">
+            <span style="font-size:17px">✉</span> Войти по почте
+          </div>
+          <div style="height:54px;border-radius:18px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15.5px;color:#5A5B66">Продолжить без аккаунта</div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="padding:0 24px 28px;font-size:12.5px;line-height:1.55;color:#8A8B96;text-align:center">Продолжая, вы принимаете <a href="#3d">условия использования</a> и <a href="#3d">политику конфиденциальности</a>.</div>
+      </div>
+    </div>
+
+    <div id="3e" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">3e</span>
+        <span style="font-size:14px;font-weight:600">Код из SMS</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="padding:8px 20px 0"><div style="width:36px;height:36px;border-radius:12px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:17px">←</div></div>
+        <div style="padding:20px 24px 0;display:flex;flex-direction:column;gap:10px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;line-height:1.2">Введите код</div>
+          <div style="font-size:15px;line-height:1.55;color:#5A5B66">Отправили SMS на +7 900 123-45-67. <a href="#3d">Изменить номер</a></div>
+        </div>
+        <div style="padding:26px 24px 0;display:flex;gap:10px">
+          <div style="flex:1;height:64px;border-radius:18px;border:1.5px solid #E4E2DA;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700">4</div>
+          <div style="flex:1;height:64px;border-radius:18px;border:1.5px solid #E4E2DA;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700">7</div>
+          <div style="flex:1;height:64px;border-radius:18px;border:2px solid #6C5CE7;background:#F4F2FF;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:#6C5CE7">|</div>
+          <div style="flex:1;height:64px;border-radius:18px;border:1.5px solid #E4E2DA"></div>
+        </div>
+        <div style="padding:16px 24px 0;font-size:14px;font-weight:600;color:#8A8B96">Отправить код повторно через 0:42</div>
+        <div style="padding:20px 24px 0">
+          <div style="background:#FFFBEF;border:1.5px solid #FFC94A;border-radius:18px;padding:14px 16px;font-size:14px;line-height:1.5;color:#8A6A00;font-weight:600">Код придёт в течение минуты. Мы подставим его автоматически.</div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="padding:0 24px 28px">
+          <div style="height:54px;border-radius:18px;background:#E4E2DA;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;font-family:'Space Grotesk',sans-serif">Подтвердить</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="3f" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">3f</span>
+        <span style="font-size:14px;font-weight:600">Уровень и цель</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="padding:14px 20px 0"><div style="height:6px;border-radius:999px;background:#F2F1EC"><div style="width:70%;height:6px;border-radius:999px;background:#6C5CE7"></div></div></div>
+        <div style="padding:20px 20px 0;font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;line-height:1.25">Кто ты и зачем пришёл?</div>
+        <div style="padding:16px 20px 0;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Уровень</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <div style="background:#F2F1EC;border-radius:999px;padding:10px 15px;font-size:14px;font-weight:600">7–8 класс</div>
+            <div style="background:#6C5CE7;color:#FFF;border-radius:999px;padding:10px 15px;font-size:14px;font-weight:700">9–11 класс</div>
+            <div style="background:#F2F1EC;border-radius:999px;padding:10px 15px;font-size:14px;font-weight:600">Вуз</div>
+            <div style="background:#F2F1EC;border-radius:999px;padding:10px 15px;font-size:14px;font-weight:600">Для себя</div>
+          </div>
+        </div>
+        <div style="padding:22px 20px 0;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Цель</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:12px;border:1.5px solid #6C5CE7;background:#F4F2FF;border-radius:18px;padding:15px 16px">
+              <div style="flex:1;font-size:15.5px;font-weight:700;font-family:'Space Grotesk',sans-serif">Сдать ЕГЭ / ОГЭ</div>
+              <div style="width:22px;height:22px;border-radius:999px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">✓</div>
+            </div>
+            <div style="border:1.5px solid #E4E2DA;border-radius:18px;padding:15px 16px;font-size:15.5px;font-weight:600">Подтянуть школьную программу</div>
+            <div style="border:1.5px solid #E4E2DA;border-radius:18px;padding:15px 16px;font-size:15.5px;font-weight:600">Быстро решать домашку</div>
+            <div style="border:1.5px solid #E4E2DA;border-radius:18px;padding:15px 16px;font-size:15.5px;font-weight:600">Разобраться в вузовской математике</div>
+          </div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="padding:16px 20px 28px">
+          <div style="height:54px;border-radius:18px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;font-family:'Space Grotesk',sans-serif">Готово</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="3g" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">3g</span>
+        <span style="font-size:14px;font-weight:600">Подписка (paywall)</span>
+      </div>
+      <div style="width:390px;height:800px;background:#14151A;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700;color:#FFF"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 20px 0">
+          <div style="font-size:13.5px;font-weight:700;color:#9A9BA6">Восстановить покупку</div>
+          <div style="width:32px;height:32px;border-radius:999px;background:#232430;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:15px">✕</div>
+        </div>
+        <div style="padding:22px 24px 0;display:flex;flex-direction:column;gap:10px">
+          <div style="color:#FFC94A;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Формула Pro</div>
+          <div style="color:#FFF;font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;line-height:1.2">Геометрия и физика с чертежами</div>
+        </div>
+        <div style="padding:20px 24px 0;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:22px;height:22px;flex:none;border-radius:999px;background:#FFC94A;color:#14151A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">★</div>
+            <div style="color:#E6E6EA;font-size:15px;line-height:1.5"><b style="color:#FFF">AI решает геометрию и физику</b> — те задачи, где обычные решатели пасуют</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:22px;height:22px;flex:none;border-radius:999px;background:#FFC94A;color:#14151A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">★</div>
+            <div style="color:#E6E6EA;font-size:15px;line-height:1.5"><b style="color:#FFF">Чертёж строится сам</b> по условию: треугольники, окружности, векторы сил</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:22px;height:22px;flex:none;border-radius:999px;background:#2ED3A0;color:#14151A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">✓</div>
+            <div style="color:#E6E6EA;font-size:15px;line-height:1.5">Анимированное построение графиков и чертежей по шагам</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:22px;height:22px;flex:none;border-radius:999px;background:#2ED3A0;color:#14151A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">✓</div>
+            <div style="color:#E6E6EA;font-size:15px;line-height:1.5">Сколько угодно фото задач в день и подробный разбор шагов</div>
+          </div>
+        </div>
+        <div style="padding:24px 24px 0;display:flex;flex-direction:column;gap:10px">
+          <div style="border:2px solid #FFC94A;background:#1F2029;border-radius:20px;padding:16px;display:flex;align-items:center;gap:12px;position:relative">
+            <div style="position:absolute;top:-11px;left:16px;background:#FFC94A;color:#14151A;font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px">Выгодно · −45%</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:3px">
+              <div style="color:#FFF;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700">На год</div>
+              <div style="color:#9A9BA6;font-size:13px;font-weight:600">1 990 ₽ · 166 ₽ в месяц</div>
+            </div>
+            <div style="width:22px;height:22px;border-radius:999px;background:#FFC94A;color:#14151A;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">✓</div>
+          </div>
+          <div style="border:1.5px solid #33343E;border-radius:20px;padding:16px;display:flex;align-items:center;gap:12px">
+            <div style="flex:1;display:flex;flex-direction:column;gap:3px">
+              <div style="color:#FFF;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700">На месяц</div>
+              <div style="color:#9A9BA6;font-size:13px;font-weight:600">299 ₽ в месяц</div>
+            </div>
+            <div style="width:22px;height:22px;border-radius:999px;border:2px solid #33343E"></div>
+          </div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="padding:0 24px 28px;display:flex;flex-direction:column;gap:12px">
+          <div style="height:56px;border-radius:18px;background:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16.5px;font-family:'Space Grotesk',sans-serif">Попробовать 7 дней бесплатно</div>
+          <div style="text-align:center;color:#8A8B96;font-size:12.5px;line-height:1.5">Потом 1 990 ₽ в год. Отменить можно в любой момент в Google Play.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="3h" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">3h</span>
+        <span style="font-size:14px;font-weight:600">Управление подпиской и лимит</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 14px">
+          <div style="width:36px;height:36px;border-radius:12px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:17px">←</div>
+          <div style="flex:1;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px">Подписка</div>
+        </div>
+        <div style="padding:0 20px 14px">
+          <div style="background:#F4F2FF;border:1.5px solid #E0DBFF;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#6C5CE7;color:#FFF;font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px;letter-spacing:.08em">PRO АКТИВНА</div>
+            </div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700">Годовая подписка</div>
+            <div style="font-size:14px;color:#5A5B66;line-height:1.5">Продлится автоматически 14 августа 2026 — 1 990 ₽</div>
+          </div>
+        </div>
+        <div style="padding:0 20px 14px">
+          <div style="border:1.5px solid #E4E2DA;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Задач сегодня</div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700">Без ограничений</div>
+            </div>
+            <div style="height:8px;border-radius:999px;background:#F2F1EC"><div style="width:100%;height:8px;border-radius:999px;background:#2ED3A0"></div></div>
+            <div style="font-size:13px;color:#8A8B96;line-height:1.5">На бесплатном тарифе — 3 задачи в день и без подробного разбора шагов.</div>
+          </div>
+        </div>
+        <div style="padding:0 20px;display:flex;flex-direction:column;gap:2px">
+          <div style="padding:16px 4px;border-bottom:1px solid #EFEDE6;display:flex;justify-content:space-between;font-size:15px;font-weight:600">Способ оплаты <span style="color:#8A8B96">Google Play</span></div>
+          <div style="padding:16px 4px;border-bottom:1px solid #EFEDE6;display:flex;justify-content:space-between;font-size:15px;font-weight:600">История платежей <span style="color:#8A8B96">›</span></div>
+          <div style="padding:16px 4px;border-bottom:1px solid #EFEDE6;display:flex;justify-content:space-between;font-size:15px;font-weight:600">Сменить тариф <span style="color:#8A8B96">›</span></div>
+          <div style="padding:16px 4px;border-bottom:1px solid #EFEDE6;display:flex;justify-content:space-between;font-size:15px;font-weight:600">Промокод <span style="color:#8A8B96">›</span></div>
+          <div style="padding:16px 4px;font-size:15px;font-weight:600;color:#D14343">Отменить подписку</div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="padding:0 20px 28px;font-size:12.5px;line-height:1.55;color:#8A8B96">После отмены Pro работает до конца оплаченного периода. История задач останется доступной.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:16px 48px 40px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:baseline;gap:16px;font-family:'Space Grotesk',sans-serif">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6C5CE7">Тур 2</div>
+    <h1 style="margin:0;font-size:30px;font-weight:700">Задача без графика: интеграл</h1>
+  </div>
+  <p style="margin:0;max-width:720px;font-size:15px;line-height:1.6;color:#5A5B66;text-wrap:pretty">Решатель сам решает, нужна ли визуализация. Если нет — место графика занимает карточка ответа, а шаги разворачиваются на весь экран. Тот же каркас, что и в <a href="#1a">1a</a>: одна и та же вьюмодель, разные слоты визуализации.</p>
+
+  <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+    <div id="2a" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">2a</span>
+        <span style="font-size:14px;font-weight:600">Решение без визуализации</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 12px">
+          <div style="width:36px;height:36px;border-radius:12px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:17px">←</div>
+          <div style="flex:1;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px">Неопределённый интеграл</div>
+          <div style="background:#FFF0C2;color:#8A6A00;font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px">+10 XP</div>
+        </div>
+        <div style="padding:0 20px 12px">
+          <div style="background:#F2F1EC;border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Условие</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600">∫ (3x² + 2x) dx</div>
+          </div>
+        </div>
+        <div style="padding:0 20px 12px">
+          <div style="border:2px dashed #D8D5CA;border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:12px">
+            <div style="font-size:18px">📈</div>
+            <div style="font-size:13.5px;line-height:1.45;color:#5A5B66">График здесь не нужен. Можно посмотреть площадь под кривой — <a href="#2a">открыть визуализацию</a></div>
+          </div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:0 20px 8px;display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ isteps }}" as="s" hint-placeholder-count="4">
+            <div onClick="{{ s.select }}" style="display:flex;gap:12px;padding:14px;border-radius:18px;cursor:pointer;background: {{ s.bg }}; border:1px solid {{ s.border }}; opacity: {{ s.textOpacity }}">
+              <div style="width:26px;height:26px;flex:none;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background: {{ s.dotBg }}; color: {{ s.dotColor }}">{{ s.n }}</div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif">{{ s.title }}</div>
+                <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:#6C5CE7">{{ s.math }}</div>
+                <div style="font-size:13.5px;line-height:1.5;color:#5A5B66;display: {{ s.bodyDisplay }}">{{ s.body }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding:12px 20px 26px;display:flex;gap:10px;align-items:center">
+          <div style="width:52px;height:52px;border-radius:18px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer">?</div>
+          <div onClick="{{ inext }}" style="flex:1;height:52px;border-radius:18px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;cursor:pointer;font-family:'Space Grotesk',sans-serif">Следующий шаг ({{ istepNum }}/4)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:16px 48px 80px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:baseline;gap:16px;font-family:'Space Grotesk',sans-serif">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6C5CE7">Тур 1</div>
+    <h1 style="margin:0;font-size:30px;font-weight:700">Формула — MVP экраны, Android + iOS</h1>
+  </div>
+  <p style="margin:0;max-width:720px;font-size:15px;line-height:1.6;color:#5A5B66;text-wrap:pretty">Два варианта экрана решения (<a href="#1a">1a</a> — лента шагов с графиком-компаньоном, <a href="#1b">1b</a> — график сверху и шаги-карточки), плюс общий поток: камера, правка условия, история, профиль. Графики интерактивные: нажимайте «Дальше» или шаг решения.</p>
+
+  <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+    <div id="1a" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">1a</span>
+        <span style="font-size:14px;font-weight:600">Решение: лента шагов, график синхронно</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFFFFF;border-radius:38px;box-shadow:0 24px 60px rgba(20,21,26,.16);overflow:hidden;display:flex;flex-direction:column;border:1px solid #E4E2DA;position:relative">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700;color:#14151A">
+          <span>9:41</span><span>▮▮▮ 84%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 14px">
+          <div style="width:36px;height:36px;border-radius:12px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:17px">←</div>
+          <div style="flex:1;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px">Разбор задачи</div>
+          <div style="background:#FFF0C2;color:#8A6A00;font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px">+15 XP</div>
+        </div>
+        <div style="padding:0 20px 14px">
+          <div style="background:#F2F1EC;border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Условие</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:600">Постройте график y = x² − 4x + 3 и найдите нули функции.</div>
+          </div>
+        </div>
+
+        <div style="padding:0 20px 12px">
+          <div style="background:#14151A;border-radius:24px;padding:16px 16px 12px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="color:#FFFFFF;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">График строится</div>
+              <div style="color:#9A9BA6;font-size:12px;font-weight:600;white-space:nowrap">шаг {{ stepNum }} / 4</div>
+            </div>
+            <svg viewBox="0 0 300 220" style="width:100%;height:200px;display:block">
+              <line x1="14" y1="155" x2="290" y2="155" stroke="#3A3B45" stroke-width="2"></line>
+              <line x1="150" y1="14" x2="150" y2="210" stroke="#3A3B45" stroke-width="2"></line>
+              <path d="M20,20 Q150,380 280,20" fill="none" stroke="#6C5CE7" stroke-width="5" stroke-linecap="round" stroke-dasharray="620" style="stroke-dashoffset: {{ curveOffset }}; transition: stroke-dashoffset .9s ease"></path>
+              <circle cx="85" cy="155" r="7" fill="#FFC94A" style="opacity: {{ rootsOpacity }}; transition: opacity .5s ease"></circle>
+              <circle cx="215" cy="155" r="7" fill="#FFC94A" style="opacity: {{ rootsOpacity }}; transition: opacity .5s ease"></circle>
+              <circle cx="150" cy="200" r="7" fill="#2ED3A0" style="opacity: {{ vertexOpacity }}; transition: opacity .5s ease"></circle>
+              <text x="70" y="182" fill="#FFC94A" font-size="14" font-family="Manrope" font-weight="700" style="opacity: {{ rootsOpacity }}">1</text>
+              <text x="222" y="182" fill="#FFC94A" font-size="14" font-family="Manrope" font-weight="700" style="opacity: {{ rootsOpacity }}">3</text>
+              <text x="160" y="206" fill="#2ED3A0" font-size="13" font-family="Manrope" font-weight="700" style="opacity: {{ vertexOpacity }}">(2; −1)</text>
+            </svg>
+          </div>
+        </div>
+
+        <div style="flex:1;overflow:auto;padding:0 20px 8px;display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+            <div onClick="{{ s.select }}" style="display:flex;gap:12px;padding:14px;border-radius:18px;cursor:pointer;background: {{ s.bg }}; border:1px solid {{ s.border }}">
+              <div style="width:26px;height:26px;flex:none;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background: {{ s.dotBg }}; color: {{ s.dotColor }}">{{ s.n }}</div>
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <div style="font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif">{{ s.title }}</div>
+                <div style="font-size:13.5px;line-height:1.5;color:#5A5B66;display: {{ s.bodyDisplay }}">{{ s.body }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="padding:8px 20px 26px;display:flex;flex-direction:column;gap:10px;background:#FFFFFF">
+          <div onClick="{{ openDetail }}" style="height:44px;border-radius:16px;border:1.5px solid #E4E2DA;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:14.5px;cursor:pointer;color:#14151A">Разобрать этот шаг подробно</div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div onClick="{{ prev }}" style="width:52px;height:52px;border-radius:18px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer">←</div>
+            <div onClick="{{ next }}" style="flex:1;height:52px;border-radius:18px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:16px;cursor:pointer;font-family:'Space Grotesk',sans-serif">Дальше →</div>
+          </div>
+        </div>
+
+        <div style="position:absolute;inset:0;background:rgba(20,21,26,.5);display: {{ detailDisplay }}; flex-direction:column;justify-content:flex-end">
+          <div onClick="{{ closeDetail }}" style="flex:1;cursor:pointer"></div>
+          <div style="background:#FFFFFF;border-radius:32px 32px 38px 38px;padding:16px 22px 26px;display:flex;flex-direction:column;gap:14px;max-height:600px;overflow:auto">
+            <div onClick="{{ closeDetail }}" style="width:44px;height:5px;border-radius:999px;background:#E4E2DA;align-self:center;cursor:pointer"></div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Шаг {{ stepNum }} подробно</div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:23px;font-weight:700;line-height:1.25">{{ detailTitle }}</div>
+            </div>
+            <div style="background:#F4F2FF;border:1px solid #E0DBFF;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:5px">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6C5CE7">Правило</div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600">{{ detailRule }}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Почему так</div>
+              <div style="font-size:15px;line-height:1.6;color:#5A5B66;text-wrap:pretty">{{ detailWhy }}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96;padding-bottom:8px">Вывод по действиям</div>
+              <sc-for list="{{ detailSub }}" as="d" hint-placeholder-count="3">
+                <div style="display:flex;gap:12px;padding:10px 0;border-top:1px solid #EFEDE6">
+                  <div style="width:22px;height:22px;flex:none;border-radius:999px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#5A5B66">{{ d.n }}</div>
+                  <div style="display:flex;flex-direction:column;gap:3px">
+                    <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600">{{ d.m }}</div>
+                    <div style="font-size:13px;line-height:1.45;color:#8A8B96">{{ d.t }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="background:#E6FAF3;border-radius:18px;padding:13px 16px;font-size:14px;line-height:1.5;color:#0E6B4F;font-weight:600">{{ detailCheck }}</div>
+            <div style="display:flex;gap:10px">
+              <div style="flex:1;height:50px;border-radius:16px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;cursor:pointer">Похожий пример</div>
+              <div onClick="{{ closeDetail }}" style="flex:1;height:50px;border-radius:16px;background:#14151A;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;cursor:pointer;font-family:'Space Grotesk',sans-serif">Понятно</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="1b" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">1b</span>
+        <span style="font-size:14px;font-weight:600">Решение: график-герой, шаги свайпом снизу</span>
+      </div>
+      <div style="width:390px;height:800px;background:#14151A;border-radius:38px;box-shadow:0 24px 60px rgba(20,21,26,.16);overflow:hidden;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700;color:#FFFFFF"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 20px 10px">
+          <div style="width:36px;height:36px;border-radius:12px;background:#232430;display:flex;align-items:center;justify-content:center;font-size:17px;color:#FFF">←</div>
+          <div style="flex:1;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:#FFF">y = x² − 4x + 3</div>
+          <div style="width:36px;height:36px;border-radius:12px;background:#232430;display:flex;align-items:center;justify-content:center;font-size:15px;color:#FFF">↺</div>
+        </div>
+        <div style="padding:0 14px">
+          <svg viewBox="0 0 300 240" style="width:100%;height:270px;display:block">
+            <line x1="14" y1="155" x2="290" y2="155" stroke="#33343E" stroke-width="2"></line>
+            <line x1="150" y1="10" x2="150" y2="230" stroke="#33343E" stroke-width="2"></line>
+            <path d="M20,20 Q150,380 280,20" fill="none" stroke="#2ED3A0" stroke-width="5" stroke-linecap="round" stroke-dasharray="620" style="stroke-dashoffset: {{ curveOffset }}; transition: stroke-dashoffset .9s ease"></path>
+            <circle cx="85" cy="155" r="8" fill="#FFC94A" style="opacity: {{ rootsOpacity }}; transition: opacity .5s ease"></circle>
+            <circle cx="215" cy="155" r="8" fill="#FFC94A" style="opacity: {{ rootsOpacity }}; transition: opacity .5s ease"></circle>
+            <circle cx="150" cy="200" r="8" fill="#6C5CE7" style="opacity: {{ vertexOpacity }}; transition: opacity .5s ease"></circle>
+          </svg>
+        </div>
+        <div style="display:flex;gap:8px;padding:6px 20px 14px;justify-content:center">
+          <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+            <div onClick="{{ s.select }}" style="width:44px;height:5px;border-radius:999px;cursor:pointer;background: {{ s.pipColor }}"></div>
+          </sc-for>
+        </div>
+        <div style="flex:1;background:#FFFFFF;border-radius:32px 32px 0 0;padding:22px 22px 26px;display:flex;flex-direction:column;gap:14px">
+          <div style="width:44px;height:5px;border-radius:999px;background:#E4E2DA;align-self:center"></div>
+          <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Шаг {{ stepNum }} из 4</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;line-height:1.25">{{ current.title }}</div>
+          <div style="font-size:15.5px;line-height:1.6;color:#5A5B66;text-wrap:pretty">{{ current.body }}</div>
+          <div style="background:#F2F1EC;border-radius:18px;padding:14px 16px;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600">{{ current.math }}</div>
+          <div style="flex:1"></div>
+          <div style="display:flex;gap:10px">
+            <div onClick="{{ prev }}" style="width:56px;height:54px;border-radius:18px;background:#F2F1EC;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer">←</div>
+            <div onClick="{{ next }}" style="flex:1;height:54px;border-radius:18px;background:#14151A;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;cursor:pointer;font-family:'Space Grotesk',sans-serif">Понятно, дальше</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="1c" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">1c</span>
+        <span style="font-size:14px;font-weight:600">Съёмка условия</span>
+      </div>
+      <div style="width:390px;height:800px;background:#1B1C24;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;position:relative">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700;color:#FFF"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="flex:1;margin:14px;border-radius:26px;background:repeating-linear-gradient(115deg,#2A2B36 0 22px,#262731 22px 44px);position:relative;display:flex;align-items:center;justify-content:center">
+          <div style="position:absolute;inset:52px 26px;border:3px solid #FFC94A;border-radius:20px;box-shadow:0 0 0 9999px rgba(20,21,26,.45)"></div>
+          <div style="position:absolute;top:22px;left:0;right:0;text-align:center;color:#FFF;font-size:14px;font-weight:600">Наведите рамку на условие целиком</div>
+          <div style="position:absolute;bottom:26px;left:26px;right:26px;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border-radius:18px;padding:12px 14px;color:#FFF;font-size:13.5px;line-height:1.5">Видим формулу и текст. Чертёж тоже попадёт в кадр — распознаем его отдельно.</div>
+        </div>
+        <div style="padding:6px 26px 30px;display:flex;align-items:center;justify-content:space-between">
+          <div style="width:54px;height:54px;border-radius:16px;background:#2A2B36;display:flex;align-items:center;justify-content:center;color:#FFF;font-size:18px">🖼</div>
+          <div style="width:76px;height:76px;border-radius:999px;background:#FFF;border:6px solid #6C5CE7"></div>
+          <div style="width:54px;height:54px;border-radius:16px;background:#2A2B36;display:flex;align-items:center;justify-content:center;color:#FFF;font-size:18px">⌨</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="1d" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">1d</span>
+        <span style="font-size:14px;font-weight:600">Проверка распознанного условия</span>
+      </div>
+      <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+        <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+        <div style="padding:10px 20px 14px;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700">Всё верно распознали?</div>
+        <div style="padding:0 20px 16px">
+          <div style="height:150px;border-radius:20px;background:repeating-linear-gradient(115deg,#EDEBE3 0 18px,#E7E5DC 18px 36px);display:flex;align-items:center;justify-content:center;color:#8A8B96;font-size:13px;font-weight:600">фото условия</div>
+        </div>
+        <div style="padding:0 20px;display:flex;flex-direction:column;gap:12px">
+          <div style="border:1.5px solid #E4E2DA;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Формула</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600">y = x² − 4x + 3</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <div style="background:#F2F1EC;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600">Править</div>
+              <div style="background:#F2F1EC;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600">x² вместо x2</div>
+            </div>
+          </div>
+          <div style="border:1.5px solid #FFC94A;background:#FFFBEF;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A6A00">Не уверены в одном символе</div>
+            <div style="font-size:14.5px;line-height:1.55;color:#5A5B66">«4x» или «Ах»? Нажмите, чтобы выбрать правильный вариант — так решение будет точным.</div>
+          </div>
+          <div style="border:1.5px solid #E4E2DA;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8B96">Что требуется</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <div style="background:#6C5CE7;color:#FFF;border-radius:999px;padding:8px 13px;font-size:13px;font-weight:700">Построить график</div>
+              <div style="background:#F2F1EC;border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600">Найти нули</div>
+              <div style="background:#F2F1EC;border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600">+ добавить</div>
+            </div>
+          </div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="padding:16px 20px 28px">
+          <div style="height:54px;border-radius:18px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;font-family:'Space Grotesk',sans-serif">Решать</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="1e" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:#14151A;color:#FFF;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:5px 11px;border-radius:999px">1e</span>
+        <span style="font-size:14px;font-weight:600">История и профиль</span>
+      </div>
+      <div style="display:flex;gap:24px">
+        <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+          <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+          <div style="padding:10px 20px 12px;font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700">История</div>
+          <div style="padding:0 20px 14px;display:flex;gap:8px">
+            <div style="background:#14151A;color:#FFF;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700">Все</div>
+            <div style="background:#F2F1EC;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600">С графиком</div>
+            <div style="background:#F2F1EC;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600">Ошибки</div>
+          </div>
+          <div style="padding:0 20px;display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ history }}" as="h" hint-placeholder-count="4">
+              <div style="display:flex;gap:12px;align-items:center;border:1.5px solid #E4E2DA;border-radius:20px;padding:14px">
+                <div style="width:46px;height:46px;border-radius:14px;flex:none;background: {{ h.tint }}; display:flex;align-items:center;justify-content:center;font-size:18px">{{ h.icon }}</div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:3px">
+                  <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600">{{ h.title }}</div>
+                  <div style="font-size:12.5px;color:#8A8B96;font-weight:600">{{ h.meta }}</div>
+                </div>
+                <div style="font-size:18px;color:#8A8B96">›</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="flex:1"></div>
+          <div style="display:flex;justify-content:space-around;align-items:center;padding:14px 20px 28px;border-top:1px solid #EFEDE6">
+            <div style="font-size:12px;font-weight:700;color:#14151A">История</div>
+            <div style="width:62px;height:62px;border-radius:999px;background:#6C5CE7;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:24px;margin-top:-32px;box-shadow:0 10px 24px rgba(108,92,231,.4)">⌾</div>
+            <div style="font-size:12px;font-weight:700;color:#8A8B96">Профиль</div>
+          </div>
+        </div>
+
+        <div style="width:390px;height:800px;background:#FFF;border-radius:38px;overflow:hidden;box-shadow:0 24px 60px rgba(20,21,26,.16);display:flex;flex-direction:column;border:1px solid #E4E2DA">
+          <div style="display:flex;justify-content:space-between;padding:16px 26px 6px;font-size:13px;font-weight:700"><span>9:41</span><span>▮▮▮ 84%</span></div>
+          <div style="padding:14px 20px 18px;display:flex;align-items:center;gap:14px">
+            <div style="width:62px;height:62px;border-radius:22px;background:#FFC94A;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700">А</div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700">Аня, 10 класс</div>
+              <div style="font-size:13px;font-weight:600;color:#8A8B96">14 дней подряд · 320 XP</div>
+            </div>
+          </div>
+          <div style="padding:0 20px 16px;display:flex;gap:12px">
+            <div style="flex:1;background:#F2F1EC;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:4px">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700">47</div>
+              <div style="font-size:12.5px;font-weight:600;color:#8A8B96">задач разобрано</div>
+            </div>
+            <div style="flex:1;background:#F2F1EC;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:4px">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700">12</div>
+              <div style="font-size:12.5px;font-weight:600;color:#8A8B96">графиков построено</div>
+            </div>
+          </div>
+          <div style="padding:0 20px 16px">
+            <div style="background:#14151A;border-radius:26px;padding:20px;display:flex;flex-direction:column;gap:10px">
+              <div style="color:#FFC94A;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Формула Pro</div>
+              <div style="color:#FFF;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;line-height:1.3">Безлимит фото и анимированные разборы</div>
+              <div style="color:#9A9BA6;font-size:13.5px;line-height:1.5">Сейчас: 3 задачи в день бесплатно</div>
+              <div style="margin-top:6px;height:50px;border-radius:16px;background:#FFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;font-family:'Space Grotesk',sans-serif">299 ₽ / месяц</div>
+            </div>
+          </div>
+          <div style="padding:0 20px;display:flex;flex-direction:column;gap:2px">
+            <div style="padding:15px 4px;border-bottom:1px solid #EFEDE6;font-size:15px;font-weight:600">Уровень сложности объяснений</div>
+            <div style="padding:15px 4px;border-bottom:1px solid #EFEDE6;font-size:15px;font-weight:600">Напоминания о занятиях</div>
+            <div style="padding:15px 4px;font-size:15px;font-weight:600">Язык интерфейса</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#6C5CE7&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#6C5CE7&quot;,&quot;#2ED3A0&quot;,&quot;#FF7A59&quot;,&quot;#14151A&quot;]}}">
+const STEPS = [
+  {title:"Смотрим на функцию", body:"Это квадратичная функция: старший коэффициент 1 > 0, значит ветви параболы вверх.", math:"y = x² − 4x + 3",
+   rule:"Вид квадратичной функции y = ax² + bx + c",
+   why:"Знак a решает всё: при a > 0 ветви идут вверх и у функции есть минимум, при a < 0 — вниз и максимум. Дальше нам останется найти всего три опорные точки.",
+   sub:[{m:"a = 1, b = −4, c = 3", t:"Выписываем коэффициенты"},{m:"a = 1 > 0", t:"Ветви вверх, есть минимум"},{m:"c = 3", t:"График пересекает ось Y в точке (0; 3)"}],
+   check:"Проверьте себя: если бы было y = −x² + 4x − 3, ветви смотрели бы вниз."},
+  {title:"Находим нули", body:"Приравниваем к нулю и раскладываем на множители. Точки пересечения с осью X появляются на графике.", math:"(x − 1)(x − 3) = 0 → x = 1; x = 3",
+   rule:"Нули функции: y = 0",
+   why:"Нули — это точки, где график касается оси X. Их две, потому что дискриминант положительный.",
+   sub:[{m:"x² − 4x + 3 = 0", t:"Приравниваем к нулю"},{m:"D = 16 − 12 = 4", t:"Считаем дискриминант"},{m:"x = (4 ± 2)/2", t:"Формула корней"},{m:"x₁ = 1, x₂ = 3", t:"Два корня — две точки на оси X"}],
+   check:"Подстановка: 1 − 4 + 3 = 0 ✓ и 9 − 12 + 3 = 0 ✓"},
+  {title:"Ищем вершину", body:"Вершина посередине между корнями. Подставляем x = 2 и получаем минимум функции.", math:"x₀ = 2, y₀ = −1",
+   rule:"Абсцисса вершины x₀ = −b / 2a",
+   why:"Парабола симметрична, поэтому вершина ровно посередине между корнями. Это и есть минимум функции.",
+   sub:[{m:"x₀ = −(−4) / (2·1) = 2", t:"По формуле вершины"},{m:"y₀ = 4 − 8 + 3 = −1", t:"Подставляем x₀ в функцию"},{m:"(2; −1)", t:"Координаты вершины"}],
+   check:"Середина между 1 и 3 — это 2. Совпало ✓"},
+  {title:"Проводим кривую", body:"Через корни и вершину плавно проводим параболу. Готово — график построен по точкам, а не наугад.", math:"Вершина (2; −1), ветви вверх",
+   rule:"Построение по опорным точкам",
+   why:"Трёх точек и знания направления ветвей достаточно, чтобы провести параболу однозначно. Ось симметрии — прямая x = 2.",
+   sub:[{m:"(1; 0) и (3; 0)", t:"Нули функции"},{m:"(2; −1)", t:"Вершина, самая нижняя точка"},{m:"(0; 3) и (4; 3)", t:"Симметричная пара для точности"}],
+   check:"Готово: y < 0 при 1 < x < 3, y > 0 вне этого промежутка."}
+];
+
+const ISTEPS = [
+  {title:"Разбиваем на слагаемые", body:"Интеграл суммы равен сумме интегралов — считаем каждое слагаемое отдельно.", math:"∫(3x² + 2x)dx = ∫3x²dx + ∫2xdx"},
+  {title:"Выносим коэффициенты", body:"Числовой множитель можно вынести за знак интеграла.", math:"3∫x²dx + 2∫x dx"},
+  {title:"Применяем формулу степени", body:"∫xⁿdx = xⁿ⁺¹/(n+1). Для n = 2 и n = 1 подставляем и сокращаем.", math:"3·x³/3 + 2·x²/2"},
+  {title:"Записываем ответ", body:"Не забываем константу интегрирования C — первообразных бесконечно много.", math:"x³ + x² + C"}
+];
+
+class Component extends DCLogic {
+  state = { step: 0, istep: 0, detail: false };
+  renderVals() {
+    const step = this.state.step;
+    const d = STEPS[step];
+    const accent = this.props.accentColor ?? "#6C5CE7";
+    return {
+      accent,
+      stepNum: step + 1,
+      current: STEPS[step],
+      curveOffset: step >= 3 ? 0 : 620,
+      rootsOpacity: step >= 1 ? 1 : 0,
+      vertexOpacity: step >= 2 ? 1 : 0,
+      next: () => this.setState(s => ({ step: Math.min(3, s.step + 1) })),
+      prev: () => this.setState(s => ({ step: Math.max(0, s.step - 1) })),
+      steps: STEPS.map((s, i) => ({
+        n: i + 1, title: s.title, body: s.body,
+        bg: i === step ? "#F4F2FF" : "#FFFFFF",
+        border: i === step ? accent : "#EFEDE6",
+        dotBg: i <= step ? accent : "#F2F1EC",
+        dotColor: i <= step ? "#FFFFFF" : "#8A8B96",
+        pipColor: i <= step ? "#2ED3A0" : "#3A3B45",
+        bodyDisplay: i === step ? "block" : "none",
+        select: () => this.setState({ step: i })
+      })),
+      detailDisplay: this.state.detail ? "flex" : "none",
+      openDetail: () => this.setState({ detail: true }),
+      closeDetail: () => this.setState({ detail: false }),
+      detailRule: d.rule, detailWhy: d.why, detailCheck: d.check, detailTitle: d.title, detailMath: d.math,
+      detailSub: d.sub.map((s, i) => ({ n: i + 1, m: s.m, t: s.t })),
+      istepNum: this.state.istep + 1,
+      inext: () => this.setState(s => ({ istep: Math.min(3, s.istep + 1) })),
+      isteps: ISTEPS.map((s, i) => ({
+        n: i + 1, title: s.title, body: s.body, math: s.math,
+        bg: i <= this.state.istep ? "#FFFFFF" : "#FAF9F5",
+        border: i === this.state.istep ? accent : "#EFEDE6",
+        dotBg: i <= this.state.istep ? accent : "#F2F1EC",
+        dotColor: i <= this.state.istep ? "#FFFFFF" : "#8A8B96",
+        textOpacity: i <= this.state.istep ? 1 : 0.45,
+        bodyDisplay: i === this.state.istep ? "block" : "none",
+        select: () => this.setState({ istep: i })
+      })),
+      history: [
+        {icon:"📈", tint:"#EDEAFF", title:"y = x² − 4x + 3", meta:"Сегодня · график построен"},
+        {icon:"∫", tint:"#E6FAF3", title:"∫ (3x² + 2x) dx", meta:"Вчера · 5 шагов"},
+        {icon:"△", tint:"#FFF3D6", title:"Треугольник ABC, найти высоту h", meta:"12 авг · чертёж"},
+        {icon:"⚖", tint:"#F2F1EC", title:"Текстовая задача на движение", meta:"11 авг · разобрана"}
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

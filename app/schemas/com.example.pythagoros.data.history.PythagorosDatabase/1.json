@@ -1,0 +1,107 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "5eb360b4b6934d097552f493e4373a6a",
+    "entities": [
+      {
+        "tableName": "solution_history",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `createdAtMillis` INTEGER NOT NULL, `recognizedText` TEXT NOT NULL, `imagePath` TEXT, `expression` TEXT NOT NULL, `problemType` TEXT NOT NULL, `answer` TEXT NOT NULL, `steps` TEXT NOT NULL, `graphTitle` TEXT, `graphVariable` TEXT, `graphCoefficients` TEXT, `graphRoots` TEXT, `graphVertexX` REAL, `graphVertexY` REAL, `graphVertexLabel` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAtMillis",
+            "columnName": "createdAtMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recognizedText",
+            "columnName": "recognizedText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imagePath",
+            "columnName": "imagePath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "expression",
+            "columnName": "expression",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "problemType",
+            "columnName": "problemType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "answer",
+            "columnName": "answer",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "steps",
+            "columnName": "steps",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "graphTitle",
+            "columnName": "graphTitle",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "graphVariable",
+            "columnName": "graphVariable",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "graphCoefficients",
+            "columnName": "graphCoefficients",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "graphRoots",
+            "columnName": "graphRoots",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "graphVertexX",
+            "columnName": "graphVertexX",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "graphVertexY",
+            "columnName": "graphVertexY",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "graphVertexLabel",
+            "columnName": "graphVertexLabel",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5eb360b4b6934d097552f493e4373a6a')"
+    ]
+  }
+}
